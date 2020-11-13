@@ -1,0 +1,295 @@
+package com.nguyenvanhoang.foodapp.view.home;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.nguyenvanhoang.foodapp.R;
+import com.nguyenvanhoang.foodapp.apdapter.RecyclerViewHomeAdapter;
+import com.nguyenvanhoang.foodapp.dao.AccountDAO;
+import com.nguyenvanhoang.foodapp.dao.ChiTietDonHangDAO;
+import com.nguyenvanhoang.foodapp.dao.DonHangDAO;
+import com.nguyenvanhoang.foodapp.dao.KhuVucDAO;
+import com.nguyenvanhoang.foodapp.dao.LoaiMonAnDAO;
+import com.nguyenvanhoang.foodapp.dao.LoaiNhaHangDAO;
+import com.nguyenvanhoang.foodapp.dao.MonAnDAO;
+import com.nguyenvanhoang.foodapp.dao.NhaHangDAO;
+import com.nguyenvanhoang.foodapp.dao.UserDAO;
+import com.nguyenvanhoang.foodapp.entities.Account;
+import com.nguyenvanhoang.foodapp.entities.ChiTietDonHang;
+import com.nguyenvanhoang.foodapp.entities.DonHang;
+import com.nguyenvanhoang.foodapp.entities.KhuVuc;
+import com.nguyenvanhoang.foodapp.entities.LoaiMonAn;
+import com.nguyenvanhoang.foodapp.entities.LoaiNhaHang;
+import com.nguyenvanhoang.foodapp.entities.MonAn;
+import com.nguyenvanhoang.foodapp.entities.NhaHang;
+import com.nguyenvanhoang.foodapp.entities.User;
+import com.nguyenvanhoang.foodapp.interface_dao.AccountDAO_Interface;
+import com.nguyenvanhoang.foodapp.interface_dao.ChiTietDonHang_Interface;
+import com.nguyenvanhoang.foodapp.interface_dao.DonHang_Interface;
+import com.nguyenvanhoang.foodapp.interface_dao.KhuVuc_Interface;
+import com.nguyenvanhoang.foodapp.interface_dao.LoaiMonAn_Interface;
+import com.nguyenvanhoang.foodapp.interface_dao.LoaiNhaHang_Interface;
+import com.nguyenvanhoang.foodapp.interface_dao.MonAn_Interface;
+import com.nguyenvanhoang.foodapp.interface_dao.NhaHang_Interface;
+import com.nguyenvanhoang.foodapp.interface_dao.UserDAO_Interface;
+import com.nguyenvanhoang.foodapp.view.category.CategoryActivity;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+public class MainActivity extends AppCompatActivity {
+    private ValueEventListener databaseReference ;
+    private FirebaseDatabase firebaseDatabase ;
+    private ViewPager viewPager;
+    private RecyclerView recyclerViewMonAn ;
+    private EditText edtTimKiemMonAn;
+    private StorageReference mStorageRef;
+    List<LoaiMonAn> loaiMonAns = new ArrayList<LoaiMonAn>();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        edtTimKiemMonAn = (EditText) findViewById(R.id.edtTimKiemMonAn);
+        viewPager = (ViewPager) findViewById(R.id.viewPagerHeader);
+        recyclerViewMonAn = (RecyclerView) findViewById(R.id.recyclerCategory);
+      // themDuLieu();
+        // load
+        LoaiMonAn_Interface loaiMonAn_interface = new LoaiMonAnDAO();
+        showLoading();
+        databaseReference = loaiMonAn_interface.getAllLoaiMonAn().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                hideLoading();
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    LoaiMonAn loaiMonAn = data.getValue(LoaiMonAn.class);
+                    loaiMonAns.add(loaiMonAn);
+                    System.out.println(data.getValue().toString());
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        RecyclerViewHomeAdapter homeAdapter =new RecyclerViewHomeAdapter(loaiMonAns,this);
+        recyclerViewMonAn.setAdapter(homeAdapter);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3,
+                GridLayoutManager.VERTICAL, false);
+        recyclerViewMonAn.setLayoutManager(layoutManager);
+        recyclerViewMonAn.setNestedScrollingEnabled(true);
+        homeAdapter.setOnItemClickListener(new RecyclerViewHomeAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+               // Toast.makeText(getApplicationContext(),loaiMonAns.get(position).getKeyID(),Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, CategoryActivity.class);
+                intent.putExtra("loaiMon", (Serializable) loaiMonAns);
+                intent.putExtra("viTri",position);
+                startActivity(intent);
+
+            }
+        });
+        homeAdapter.notifyDataSetChanged();
+        edtTimKiemMonAn.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_DONE){
+              //      Toast.makeText(getApplicationContext(),edtTimKiemMonAn.getText().toString(),Toast.LENGTH_LONG).show();
+
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+    public void showLoading() {
+        findViewById(R.id.shimmerMeal).setVisibility(View.VISIBLE);
+        findViewById(R.id.shimmerCategory).setVisibility(View.VISIBLE);
+    }
+
+    public void hideLoading() {
+        findViewById(R.id.shimmerMeal).setVisibility(View.GONE);
+        findViewById(R.id.shimmerCategory).setVisibility(View.GONE);
+    }
+    public void themDuLieu(){
+        // add user
+        final User user = new User();
+        user.setEmailUser("nguyenvanhoang34iuh@gmail.com");
+        user.setPassWord("12345678");
+        user.setHoTen("Nguyễn Văn Hoàng");
+        user.setSdt("0898136946");
+        user.setHinhAnh(".img");
+        user.setNamSinh("21/11/1999");
+        user.setDiaChi("Khánh Hòa");
+        user.setGioiTinh("Nam");
+        UserDAO_Interface userDAO_interface = new UserDAO();
+        userDAO_interface.addUser(user);
+        //add loai nha hang
+        LoaiNhaHang_Interface loaiNhaHang_interface = new LoaiNhaHangDAO();
+        LoaiNhaHang loaiNhaHang = new LoaiNhaHang();
+        loaiNhaHang.setTenLoai("Nhà hàng Hải Yến");
+        loaiNhaHang.setHinhAnh("./img");
+        loaiNhaHang_interface.addLoaiNhaHang(loaiNhaHang);
+        //add khu vực
+        KhuVuc khuVuc = new KhuVuc();
+        khuVuc.setTenKhuVuc("Hồ Chí Minh");
+
+        KhuVuc_Interface khuVuc_interface = new KhuVucDAO();
+        khuVuc_interface.addKhuVuc(khuVuc);
+        //add Nha hang
+        NhaHang nhaHang = new NhaHang();
+        nhaHang.setEmailNhaHang("thatbatngo34@gmail.com");
+        nhaHang.setIdKhuVuc(khuVuc.getKeyID());
+        nhaHang.setIdLoai(loaiNhaHang.getKeyID());
+        nhaHang.setSdt("0891723133");
+        nhaHang.setDiaChi("80/7 Đường số 03,Gò Vấp");
+        nhaHang.setGioiThieu("Quán nướng BBQ");
+        nhaHang.setHinhAnh("./img/hinhanhnhahang.png");
+        nhaHang.setTenNhaHang("Nhà Hàng BBQ Số 1");
+
+        NhaHang_Interface nhaHang_interface = new NhaHangDAO();
+        nhaHang_interface.addNhaHang(nhaHang);
+        LoaiMonAn loaiMonAn = new LoaiMonAn("Đồ ăn nhanh","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fd8f6qx1604182128.jpg?alt=media&token=975e6245-1eb6-405f-afd3-3fcdb88aef26");
+        LoaiMonAn loaiMonAn1 = new LoaiMonAn("Cơm phần","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Frlwcc51598734603.jpg?alt=media&token=a3e5b164-62cc-40ad-9850-966dd9ea8eb5");
+        LoaiMonAn loaiMonAn2 = new LoaiMonAn("Bánh mì","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fkcv6hj1598733479.jpg?alt=media&token=d6dc8883-c592-4744-af58-4c5605aab19f");
+        LoaiMonAn loaiMonAn3 = new LoaiMonAn("Ăn vặt","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fwprvrw1511641295.jpg?alt=media&token=1c4d8174-f9fa-461b-a000-02465fa019b7");
+        LoaiMonAn loaiMonAn4 = new LoaiMonAn("Gà","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Flvn2d51598732465.jpg?alt=media&token=9b689592-1a00-4f09-b696-ae3ed638ca46");
+        LoaiMonAn loaiMonAn5 = new LoaiMonAn("Bò nướng","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fypuxtw1511297463.jpg?alt=media&token=6705e9fb-d20f-4c84-808c-f364aabe9fa6");
+        LoaiMonAn loaiMonAn6 = new LoaiMonAn("Mì xào","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fmixao.jpg?alt=media&token=c7d4e250-7bd2-44be-bd9d-707dcc931f9e");
+        LoaiMonAn loaiMonAn7 = new LoaiMonAn("Trà sữa","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Ftra-sua.jpg?alt=media&token=22eada9d-57eb-4a9d-81a3-c997bccbc5d1");
+        LoaiMonAn loaiMonAn8 = new LoaiMonAn("Bizza","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fbizza.jpg?alt=media&token=a4af9334-60d8-4cc5-ba40-03cf2672d7b0");
+        LoaiMonAn_Interface loaiMonAn_interface = new LoaiMonAnDAO();
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn1);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn2);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn3);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn4);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn5);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn6);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn7);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn8);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn2);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn3);
+        loaiMonAn_interface.addLoaiMonAn(loaiMonAn7);
+        //add Mon an
+        MonAn_Interface monAn_interface = new MonAnDAO();
+        MonAn monAn = new MonAn();
+        monAn.setTenMon("Bò Nướng BBQ");
+        monAn.setGiaTien(250000);
+        monAn.setIdNhaHang(nhaHang.getKeyID());
+        monAn.setMoTa("Bò nướng siêu ngon");
+        monAn.setDiscount(12);
+        monAn.setIdLoaiMon(loaiMonAn5.getKeyID());
+        monAn.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/MonAn%2Fypuxtw1511297463.jpg?alt=media&token=fd853ef5-8953-4c75-85ed-180c6660eeeb");
+        monAn.setTrangThai("true");
+        ///
+
+        MonAn monAn1 = new MonAn();
+        monAn1.setTenMon("Bò Nướng Số 1 Sài Gòn");
+        monAn1.setGiaTien(250000);
+        monAn1.setIdNhaHang(nhaHang.getKeyID());
+        monAn1.setMoTa("Bò nướng siêu ngon");
+        monAn1.setDiscount(12);
+        monAn1.setIdLoaiMon(loaiMonAn5.getKeyID());
+        monAn1.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/MonAn%2Fypuxtw1511297463.jpg?alt=media&token=fd853ef5-8953-4c75-85ed-180c6660eeeb");
+        monAn1.setTrangThai("true");
+      //  System.out.println("Loai mon an 5" + loaiMonAn5.getKeyID());
+
+        /// set mon an loai do an nhanh
+        MonAn monAnDoAnNhanh = new MonAn();
+        monAnDoAnNhanh.setTenMon("Humburger");
+        monAnDoAnNhanh.setGiaTien(250000);
+        monAnDoAnNhanh.setIdNhaHang(nhaHang.getKeyID());
+        monAnDoAnNhanh.setMoTa("Humburger ngon siêu rẻ");
+        monAnDoAnNhanh.setDiscount(12);
+        monAnDoAnNhanh.setIdLoaiMon(loaiMonAn.getKeyID());
+        monAnDoAnNhanh.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/MonAn%2FdoAnNhanh.jpg?alt=media&token=29081397-15ab-4dbb-ba10-867813a8b209");
+        monAnDoAnNhanh.setTrangThai("true");
+
+
+        //
+        MonAn monAnDoAnNhanh1 = new MonAn();
+        monAnDoAnNhanh1.setTenMon("Susi Nhật");
+        monAnDoAnNhanh1.setGiaTien(250000);
+        monAnDoAnNhanh1.setIdNhaHang(nhaHang.getKeyID());
+        monAnDoAnNhanh1.setMoTa("Susi Nhật Bản thượng hạn");
+        monAnDoAnNhanh1.setDiscount(12);
+        monAnDoAnNhanh1.setIdLoaiMon(loaiMonAn.getKeyID());
+        monAnDoAnNhanh1.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/MonAn%2FdoAnNhanh02.jpg?alt=media&token=d36c091a-e0a1-4ecd-95aa-ef9aad9ff0b6");
+        monAnDoAnNhanh1.setTrangThai("true");
+        //
+        MonAn monAnDoAnNhanh2 = new MonAn();
+        monAnDoAnNhanh2.setTenMon("Bánh Tráng Nướng");
+        monAnDoAnNhanh2.setGiaTien(250000);
+        monAnDoAnNhanh2.setIdNhaHang(nhaHang.getKeyID());
+        monAnDoAnNhanh2.setMoTa("Bánh tráng nướng Sài Gòn");
+        monAnDoAnNhanh2.setDiscount(12);
+        monAnDoAnNhanh2.setIdLoaiMon(loaiMonAn.getKeyID());
+        monAnDoAnNhanh2.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/MonAn%2FdoAnNhanh03.jpg?alt=media&token=9edef593-12fc-4493-83ea-6efb4e16494c");
+        monAnDoAnNhanh2.setTrangThai("true");
+
+
+        monAn_interface.addMonAn(monAn);
+        monAn_interface.addMonAn(monAn1);
+        monAn_interface.addMonAn(monAnDoAnNhanh);
+        monAn_interface.addMonAn(monAnDoAnNhanh1);
+        monAn_interface.addMonAn(monAnDoAnNhanh2);
+//        //add Don hang
+        DonHang donHang = new DonHang();
+        donHang.setKeyIdNhaHang(nhaHang.getKeyID());
+        donHang.setKeyIdUser(user.getKeyID());
+        donHang.setGhiChu("3 Bò Nướng thượng hạng");
+        long millis = System.currentTimeMillis();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        java.util.Date date = new java.util.Date();
+        donHang.setNgayDat(simpleDateFormat.format(date));
+        donHang.setTrangThaiXacNhanDonHang("true");
+        donHang.setTrangThaiDaGiaoHang("false");
+
+        DonHang_Interface donHang_interface = new DonHangDAO();
+    //    donHang_interface.addDonHang(donHang);
+        // add chi tiet don hang
+        ChiTietDonHang chiTietDonHang = new ChiTietDonHang();
+        chiTietDonHang.setGia(450000);
+        chiTietDonHang.setIdMon(monAn.getKeyID());
+        chiTietDonHang.setSoLuong(3);
+
+        ChiTietDonHang_Interface chiTietDonHang_interface = new ChiTietDonHangDAO();
+    //    chiTietDonHang_interface.addChiTietDonHang(chiTietDonHang);
+//        // add account
+        Account account = new Account();
+        account.setEmail("hoangnguyenbao19@gmail.com");
+        account.setPassWord("12345678");
+        account.setRole("nhahang");
+
+        AccountDAO_Interface accountDAO_interface = new AccountDAO();
+     //   accountDAO_interface.addAccount(account);
+
+
+    }
+}
