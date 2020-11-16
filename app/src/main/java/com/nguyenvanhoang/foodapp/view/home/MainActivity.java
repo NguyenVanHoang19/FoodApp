@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,7 @@ import com.nguyenvanhoang.foodapp.interface_dao.MonAn_Interface;
 import com.nguyenvanhoang.foodapp.interface_dao.NhaHang_Interface;
 import com.nguyenvanhoang.foodapp.interface_dao.UserDAO_Interface;
 import com.nguyenvanhoang.foodapp.view.category.CategoryActivity;
+import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private RecyclerView recyclerViewMonAn ;
     private EditText edtTimKiemMonAn;
+    private Button btnUser;
     private StorageReference mStorageRef;
     List<LoaiMonAn> loaiMonAns = new ArrayList<LoaiMonAn>();
 
@@ -78,6 +81,15 @@ public class MainActivity extends AppCompatActivity {
         edtTimKiemMonAn = (EditText) findViewById(R.id.edtTimKiemMonAn);
         viewPager = (ViewPager) findViewById(R.id.viewPagerHeader);
         recyclerViewMonAn = (RecyclerView) findViewById(R.id.recyclerCategory);
+        btnUser = (Button) findViewById(R.id.btnUser);
+
+        btnUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, UserActivity.class);
+                startActivity(intent);
+            }
+        });
       // themDuLieu();
         // load
         LoaiMonAn_Interface loaiMonAn_interface = new LoaiMonAnDAO();
@@ -169,11 +181,22 @@ public class MainActivity extends AppCompatActivity {
         nhaHang.setSdt("0891723133");
         nhaHang.setDiaChi("80/7 Đường số 03,Gò Vấp");
         nhaHang.setGioiThieu("Quán nướng BBQ");
-        nhaHang.setHinhAnh("./img/hinhanhnhahang.png");
+        nhaHang.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fypuxtw1511297463.jpg?alt=media&token=6705e9fb-d20f-4c84-808c-f364aabe9fa6");
         nhaHang.setTenNhaHang("Nhà Hàng BBQ Số 1");
+        ///
+        NhaHang nhaHang1 = new NhaHang();
+        nhaHang1.setEmailNhaHang("nguyenvanhoang34@gmail.com");
+        nhaHang1.setIdKhuVuc(khuVuc.getKeyID());
+        nhaHang1.setIdLoai(loaiNhaHang.getKeyID());
+        nhaHang1.setSdt("08917238992");
+        nhaHang1.setDiaChi("70/20 Bến Nghé,Gò Vấp,Hồ Chí Minh");
+        nhaHang1.setGioiThieu("Thiên đường món ngon");
+        nhaHang1.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fd8f6qx1604182128.jpg?alt=media&token=975e6245-1eb6-405f-afd3-3fcdb88aef26");
+        nhaHang1.setTenNhaHang("Thức ăn nhanh Ngọc Hoa");
 
         NhaHang_Interface nhaHang_interface = new NhaHangDAO();
         nhaHang_interface.addNhaHang(nhaHang);
+        nhaHang_interface.addNhaHang(nhaHang1);
         LoaiMonAn loaiMonAn = new LoaiMonAn("Đồ ăn nhanh","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fd8f6qx1604182128.jpg?alt=media&token=975e6245-1eb6-405f-afd3-3fcdb88aef26");
         LoaiMonAn loaiMonAn1 = new LoaiMonAn("Cơm phần","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Frlwcc51598734603.jpg?alt=media&token=a3e5b164-62cc-40ad-9850-966dd9ea8eb5");
         LoaiMonAn loaiMonAn2 = new LoaiMonAn("Bánh mì","https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fkcv6hj1598733479.jpg?alt=media&token=d6dc8883-c592-4744-af58-4c5605aab19f");
@@ -224,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         MonAn monAnDoAnNhanh = new MonAn();
         monAnDoAnNhanh.setTenMon("Humburger");
         monAnDoAnNhanh.setGiaTien(250000);
-        monAnDoAnNhanh.setIdNhaHang(nhaHang.getKeyID());
+        monAnDoAnNhanh.setIdNhaHang(nhaHang1.getKeyID());
         monAnDoAnNhanh.setMoTa("Humburger ngon siêu rẻ");
         monAnDoAnNhanh.setDiscount(12);
         monAnDoAnNhanh.setIdLoaiMon(loaiMonAn.getKeyID());
@@ -236,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
         MonAn monAnDoAnNhanh1 = new MonAn();
         monAnDoAnNhanh1.setTenMon("Susi Nhật");
         monAnDoAnNhanh1.setGiaTien(250000);
-        monAnDoAnNhanh1.setIdNhaHang(nhaHang.getKeyID());
+        monAnDoAnNhanh1.setIdNhaHang(nhaHang1.getKeyID());
         monAnDoAnNhanh1.setMoTa("Susi Nhật Bản thượng hạn");
         monAnDoAnNhanh1.setDiscount(12);
         monAnDoAnNhanh1.setIdLoaiMon(loaiMonAn.getKeyID());
@@ -246,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         MonAn monAnDoAnNhanh2 = new MonAn();
         monAnDoAnNhanh2.setTenMon("Bánh Tráng Nướng");
         monAnDoAnNhanh2.setGiaTien(250000);
-        monAnDoAnNhanh2.setIdNhaHang(nhaHang.getKeyID());
+        monAnDoAnNhanh2.setIdNhaHang(nhaHang1.getKeyID());
         monAnDoAnNhanh2.setMoTa("Bánh tráng nướng Sài Gòn");
         monAnDoAnNhanh2.setDiscount(12);
         monAnDoAnNhanh2.setIdLoaiMon(loaiMonAn.getKeyID());
@@ -272,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
         donHang.setTrangThaiDaGiaoHang("false");
 
         DonHang_Interface donHang_interface = new DonHangDAO();
-    //    donHang_interface.addDonHang(donHang);
+        donHang_interface.addDonHang(donHang);
         // add chi tiet don hang
         ChiTietDonHang chiTietDonHang = new ChiTietDonHang();
         chiTietDonHang.setGia(450000);
@@ -280,7 +303,7 @@ public class MainActivity extends AppCompatActivity {
         chiTietDonHang.setSoLuong(3);
 
         ChiTietDonHang_Interface chiTietDonHang_interface = new ChiTietDonHangDAO();
-    //    chiTietDonHang_interface.addChiTietDonHang(chiTietDonHang);
+        chiTietDonHang_interface.addChiTietDonHang(chiTietDonHang);
 //        // add account
         Account account = new Account();
         account.setEmail("hoangnguyenbao19@gmail.com");
@@ -288,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
         account.setRole("nhahang");
 
         AccountDAO_Interface accountDAO_interface = new AccountDAO();
-     //   accountDAO_interface.addAccount(account);
+        accountDAO_interface.addAccount(account);
 
 
     }

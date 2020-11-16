@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.cart.AddCartFragment"
+    android:fitsSystemWindows="true"
+    >
+    <ImageView
+        android:id="@+id/imageMonAnCart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:src="@drawable/googlemaps"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        />
+    <TextView
+        android:id="@+id/tvTenMonAnCart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageMonAnCart"
+        android:text="Combo bò"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:maxLines="2"
+        android:paddingLeft="15dp"
+        />
+
+    <TextView
+        android:id="@+id/tvSoLuongCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTenMonAnCart"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        android:maxLines="1"
+        android:text="Số lượng"
+        android:textColor="#000000"
+        android:textSize="30dp"
+        android:textStyle="normal" />
+
+    <Button
+        android:id="@+id/btnCongSoLuong"
+        android:layout_width="45dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/tvSoLuongCart"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="133dp"
+        android:background="@color/colorNull"
+        android:gravity="center"
+        android:text="+"
+        android:textSize="30dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvSoLuongMonAnChon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSoLuongCart"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="182dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="198dp"
+        android:layout_marginRight="50dp"
+        android:text="1"
+        android:textColor="#000000"
+        android:textSize="30dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnTruSoLuong"
+        android:layout_width="45dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/tvSoLuongCart"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="146dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="235dp"
+        android:background="@color/colorNull"
+        android:gravity="center"
+        android:text="-"
+        android:textSize="30dp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnThemVaoGioHang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvSoLuongMonAnChon"
+        android:layout_marginTop="29dp"
+        android:layout_centerInParent="true"
+        android:background="@color/bg_login"
+        android:text="Thêm vào giỏ hàng"
+        android:textColor="#ffffff"
+        android:textSize="20dp"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:textStyle="bold" />
+</RelativeLayout>

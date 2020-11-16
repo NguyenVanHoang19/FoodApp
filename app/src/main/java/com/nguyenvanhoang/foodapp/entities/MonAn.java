@@ -1,6 +1,7 @@
 package com.nguyenvanhoang.foodapp.entities;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class MonAn implements Serializable {
     private String keyID;
@@ -103,6 +104,19 @@ public class MonAn implements Serializable {
 
     public void setHinhAnh(String hinhAnh) {
         this.hinhAnh = hinhAnh;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MonAn)) return false;
+        MonAn monAn = (MonAn) o;
+        return getKeyID().equals(monAn.getKeyID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getKeyID());
     }
 
     @Override

@@ -87,7 +87,9 @@ public class CategoryFragment extends Fragment{
                     hideLoading();
                         MonAn monAn = dataSnapshot.getValue(MonAn.class);
                         System.out.println(monAn.getTenMon());
-                        monAnTheoLoaiList.add(monAn);
+                        if(!monAnTheoLoaiList.contains(monAn)){
+                            monAnTheoLoaiList.add(monAn);
+                        }
                         adapter.notifyDataSetChanged();
                         adapter.setOnItemClickListener(new RecyclerViewMonAnByLoaiMon.ClickListener() {
                             @Override

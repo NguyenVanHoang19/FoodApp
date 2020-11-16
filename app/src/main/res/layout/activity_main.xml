@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="300dp">
             <View
+                android:id="@+id/view"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
                 android:background="@color/colorPrimary" />
@@ -30,9 +31,18 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-
+            <Button
+                android:id="@+id/btnUser"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/ic_baseline_account_circle_24"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="20dp"
+                android:layout_alignParentRight="true"
+                />
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSearch"
                 android:layout_below="@id/title"

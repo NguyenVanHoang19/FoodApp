@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.nguyenvanhoang.foodapp.MapsActivity;
 import com.nguyenvanhoang.foodapp.R;
 import com.nguyenvanhoang.foodapp.apdapter.RecyclerViewDanhSachMonAnCuaNhaHang;
 import com.nguyenvanhoang.foodapp.dao.MonAnDAO;
@@ -30,6 +32,8 @@ import com.nguyenvanhoang.foodapp.entities.LoaiMonAn;
 import com.nguyenvanhoang.foodapp.entities.MonAn;
 import com.nguyenvanhoang.foodapp.entities.NhaHang;
 import com.nguyenvanhoang.foodapp.interface_dao.MonAn_Interface;
+import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
+import com.nguyenvanhoang.foodapp.view.cart.AddCartFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -40,6 +44,7 @@ public class DetailActivity extends AppCompatActivity {
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private ImageView hinhAnhThumb;
+    private Button hinhAnhGoogleMaps;
     private TextView tvTenNhaHang;
     private TextView tvMoTaNhaHang;
     private TextView tvDiaChiDetail;
@@ -47,6 +52,8 @@ public class DetailActivity extends AppCompatActivity {
     private RecyclerView recyclerViewDanhSachMonAnDetail;
     private ValueEventListener databaseReference ;
     private FirebaseDatabase firebaseDatabase ;
+    private String tenNhaHang_SendCart = "";
+    private String diaChiNhaHang_SendCart = "";
     List<MonAn> monAnList = new ArrayList<MonAn>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +68,7 @@ public class DetailActivity extends AppCompatActivity {
         tvDiaChiDetail = (TextView) findViewById(R.id.tvDiaChiDetail);
         tvMoTaNhaHang = (TextView) findViewById(R.id.tvMoTaNhaHang);
         tvGioMoCua = (TextView) findViewById(R.id.tvGioMoCua);
+        hinhAnhGoogleMaps = (Button) findViewById(R.id.imageViewMaps);
         recyclerViewDanhSachMonAnDetail = (RecyclerView) findViewById(R.id.recyclerViewDanhSachMonAnDetail);
         setupActionBar();
         Intent intent =getIntent();
@@ -72,7 +80,15 @@ public class DetailActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new RecyclerViewDanhSachMonAnCuaNhaHang.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Toast.makeText(getApplicationContext(),"Do Dai: "+monAnList.get(position).getKeyID(),Toast.LENGTH_LONG).show();
+                AddCartFragment addCartFragment = AddCartFragment.newInstance(monAnList.get(position),tenNhaHang_SendCart,diaChiNhaHang_SendCart);
+                addCartFragment.show(getSupportFragmentManager(),"Thêm vào giỏ hàng");
+            }
+        });
+        hinhAnhGoogleMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(getApplicationContext(), MapsActivity.class);
+                startActivity(intent1);
             }
         });
         //
@@ -84,6 +100,8 @@ public class DetailActivity extends AppCompatActivity {
                 NhaHang nhaHang = dataSnapshot.getValue(NhaHang.class);
                 tvTenNhaHang.setText(nhaHang.getTenNhaHang());
                 tvMoTaNhaHang.setText(nhaHang.getGioiThieu()+ " ");
+                tenNhaHang_SendCart = nhaHang.getTenNhaHang();
+                diaChiNhaHang_SendCart = nhaHang.getDiaChi();
                 tvDiaChiDetail.setText(nhaHang.getDiaChi() + " ");
                 // them gio mo cua
                 Picasso.get().load(nhaHang.getHinhAnh()).placeholder(R.drawable.shadow_bottom_to_top).into(hinhAnhThumb);

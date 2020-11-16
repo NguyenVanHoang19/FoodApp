@@ -57,14 +57,7 @@ public class RecyclerViewDanhSachMonAnCuaNhaHang extends RecyclerView.Adapter<Re
         double gia = monAnList.get(position).getGiaTien();
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         String giaFormat = decimalFormat.format(gia);
-        holder.textViewGia.setText(giaFormat + "VNĐ");
-        holder.btnThem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Toast.makeText(holder.,tenMon,Toast.LENGTH_LONG).show();
-                System.out.println("da kich");
-            }
-        });
+        holder.textViewGia.setText(giaFormat + " VNĐ");
     }
 
     @Override
@@ -75,15 +68,12 @@ public class RecyclerViewDanhSachMonAnCuaNhaHang extends RecyclerView.Adapter<Re
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private ImageView hinhAnhMonAn;
         private TextView textViewTenMonAn,textViewChiTiet,textViewGia;
-        private Button btnThem;
-
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             hinhAnhMonAn = (ImageView) itemView.findViewById(R.id.mealThumb);
             textViewTenMonAn = (TextView) itemView.findViewById(R.id.mealName);
             textViewChiTiet = (TextView) itemView.findViewById(R.id.tvChiTiet);
             textViewGia = (TextView) itemView.findViewById(R.id.tvGiaTien);
-            btnThem = (Button) itemView.findViewById(R.id.btnThem);
             itemView.setOnClickListener(this);
         }
 

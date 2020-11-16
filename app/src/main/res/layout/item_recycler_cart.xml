@@ -21,6 +21,46 @@
             android:src="@drawable/sample_image_meal"
             android:layout_width="120dp"
             android:layout_height="120dp"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            app:cardCornerRadius="10dp"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/btnTruSoLuongThanhToan"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="-"
+                    android:textStyle="bold"
+                    android:background="@color/colorWhite" />
+                <TextView
+                    android:id="@+id/tvSoLuongMonAnChonThanhToan"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:text="1"
+                    />
+                <Button
+                    android:id="@+id/btnCongSoLuongThanhToan"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:text="+"
+                    android:textStyle="bold"
+                    android:background="@color/colorWhite" />
+            </LinearLayout>
+
+
+        </androidx.cardview.widget.CardView>
+
         <TextView
             android:text="@string/meal_categories"
             android:textSize="16sp"

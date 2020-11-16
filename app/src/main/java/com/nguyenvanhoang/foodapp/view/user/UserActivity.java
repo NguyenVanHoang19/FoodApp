@@ -1,0 +1,89 @@
+package com.nguyenvanhoang.foodapp.view.user;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.nguyenvanhoang.foodapp.R;
+
+public class UserActivity extends AppCompatActivity {
+    private Toolbar toolbar ;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private Button btnDangNhap,btnDangKy,btnDangXuat;
+    public static boolean TRANG_THAI_DANG_NHAP = false;
+    public static String Email_Login = "";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_user);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        btnDangKy = (Button) findViewById(R.id.btnDangKy);
+        btnDangNhap = (Button) findViewById(R.id.btnDangNhap);
+        btnDangXuat = (Button) findViewById(R.id.btnDangXuat);
+        btnDangXuat.setVisibility(View.GONE);
+        initActionBar();
+        if(TRANG_THAI_DANG_NHAP){
+            btnDangNhap.setVisibility(View.GONE);
+            btnDangKy.setVisibility(View.GONE);
+            btnDangXuat.setVisibility(View.VISIBLE);
+            setTitle(Email_Login);
+        }
+        btnDangNhap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserActivity.this,LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnDangKy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(UserActivity.this,DangKyActivity.class);
+                startActivity(intent);
+            }
+        });
+        btnDangXuat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnDangXuat.setVisibility(View.VISIBLE);
+                TRANG_THAI_DANG_NHAP = false;
+                Email_Login = "";
+                setTitle("Thông tin người dùng");
+            }
+        });
+
+    }
+    private void initActionBar() {
+        setSupportActionBar(toolbar);
+        setTitle("Thông tin người dùng");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home :
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+}
