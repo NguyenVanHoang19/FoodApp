@@ -24,6 +24,7 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
     private static String TB_MONAN_MANHAHANG = "MA_NHA_HANG";
     private static String TB_MONAN_TENNHAHANG = "TEN_NHA_HANG";
     private static String TB_MONAN_DIACHINHAHANG = "DIA_CHI_NHA_HANG";
+    private static String TB_MONAN_MAUSER = "MA_USER";
     // user dat hang
     private static String TB_USER = "USER";
     private static String TB_USER_MA = "MA_USER";
@@ -39,7 +40,7 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String tbMonAn = "CREATE TABLE " + TB_MONAN +" ( "+
+        String tbGioHang = "CREATE TABLE " + TB_MONAN +" ( "+
                 TB_MONAN_MAMON + " TEXT PRIMARY KEY," +
                 TB_MONAN_TENMON + " TEXT,"+
                 TB_MONAN_CHITIET + " TEXT,"+
@@ -48,12 +49,13 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
                 TB_MONAN_SOLUONGCHON + " INTEGER,"+
                 TB_MONAN_MANHAHANG + " TEXT,"+
                 TB_MONAN_DIACHINHAHANG + " TEXT,"+
-                TB_MONAN_TENNHAHANG + " TEXT )";
+                TB_MONAN_TENNHAHANG + " TEXT,"+
+                TB_MONAN_MAUSER + " TEXT )";
         String tbUser = " CREATE TABLE " + TB_USER +" ( "+
                 TB_USER_GMAIL + " TEXT PRIMARY KEY," +
                 TB_USER_TEN + " TEXT,"+
                 TB_USER_MAMONAN + " TEXT )";
-        sqLiteDatabase.execSQL(tbMonAn);
+        sqLiteDatabase.execSQL(tbGioHang);
         sqLiteDatabase.execSQL(tbUser);
     }
 
@@ -75,6 +77,7 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
         contentValues.put(TB_MONAN_MANHAHANG,monAnCart.getMaNhaHang());
         contentValues.put(TB_MONAN_DIACHINHAHANG,monAnCart.getDiaChiNhaHang());
         contentValues.put(TB_MONAN_TENNHAHANG,monAnCart.getTenNhaHang());
+        contentValues.put(TB_MONAN_MAUSER,monAnCart.getMaUser());
 
         int result = (int)sqLiteDatabase.insert(TB_MONAN,null,contentValues);
         sqLiteDatabase.close();
@@ -98,6 +101,59 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
             monAnCart.setMaNhaHang(cursor.getString(6));
             monAnCart.setDiaChiNhaHang(cursor.getString(7));
             monAnCart.setTenNhaHang(cursor.getString(8));
+            monAnCart.setMaUser(cursor.getString(9));
+            list.add(monAnCart);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+    public ArrayList<MonAnCart> getAllMonAnCartNoUser(String maUser){
+        ArrayList<MonAnCart> list = new ArrayList<MonAnCart>();
+        SQLiteDatabase db =this.getReadableDatabase();
+        Cursor cursor= db.rawQuery("select * from " +TB_MONAN +" WHERE " +TB_MONAN_MAUSER + " =" +"'" + maUser + "'" ,null);
+        if(cursor !=  null){
+            cursor.moveToFirst();
+        }
+        while (cursor.isAfterLast() == false){
+            MonAnCart monAnCart = new MonAnCart();
+            monAnCart.setMaMon(cursor.getString(0));
+            monAnCart.setTenMon(cursor.getString(1));
+            monAnCart.setChiTiet(cursor.getString(2));
+            monAnCart.setHinhAnh(cursor.getString(3));
+            monAnCart.setGia(cursor.getDouble(4));
+            monAnCart.setSoLuongChon(cursor.getInt(5));
+            monAnCart.setMaNhaHang(cursor.getString(6));
+            monAnCart.setDiaChiNhaHang(cursor.getString(7));
+            monAnCart.setTenNhaHang(cursor.getString(8));
+            monAnCart.setMaUser(cursor.getString(9));
+            list.add(monAnCart);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        return list;
+    }
+    public ArrayList<MonAnCart> getAllMonAnCartByUser(String maUser){
+        ArrayList<MonAnCart> list = new ArrayList<MonAnCart>();
+        SQLiteDatabase db =this.getReadableDatabase();
+        Cursor cursor= db.rawQuery("select * from " +TB_MONAN +" WHERE " +TB_MONAN_MAUSER + " =" +"'" + maUser + "'" ,null);
+        if(cursor !=  null){
+            cursor.moveToFirst();
+        }
+        while (cursor.isAfterLast() == false){
+            MonAnCart monAnCart = new MonAnCart();
+            monAnCart.setMaMon(cursor.getString(0));
+            monAnCart.setTenMon(cursor.getString(1));
+            monAnCart.setChiTiet(cursor.getString(2));
+            monAnCart.setHinhAnh(cursor.getString(3));
+            monAnCart.setGia(cursor.getDouble(4));
+            monAnCart.setSoLuongChon(cursor.getInt(5));
+            monAnCart.setMaNhaHang(cursor.getString(6));
+            monAnCart.setDiaChiNhaHang(cursor.getString(7));
+            monAnCart.setTenNhaHang(cursor.getString(8));
+            monAnCart.setMaUser(cursor.getString(9));
             list.add(monAnCart);
             cursor.moveToNext();
         }
@@ -122,6 +178,7 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
         db.close();
         return monAnCart;
     }
+
     public MonAnCart timMonAnTheoMa(String maMonAn){
         MonAnCart monAnCart = new MonAnCart();
         SQLiteDatabase db =this.getReadableDatabase();
@@ -150,9 +207,7 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
     }
     public int deleteMonAn(String maMonAn){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(TB_MONAN_MAMON,maMonAn);
-        int result = (int)sqLiteDatabase.update(TB_MONAN,contentValues,TB_MONAN_MAMON + "="+"'"+maMonAn+"'",null);
+        int result =(int) sqLiteDatabase.delete(TB_MONAN, TB_MONAN_MAMON + " = " + '"' + maMonAn + '"',null);
         sqLiteDatabase.close();
         return result;
     }

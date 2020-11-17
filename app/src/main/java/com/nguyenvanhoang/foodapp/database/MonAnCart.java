@@ -12,6 +12,7 @@ public class MonAnCart implements Serializable {
     private String maNhaHang;
     private String diaChiNhaHang;
     private String tenNhaHang;
+    private String maUser;
 
     public MonAnCart() {
         super();
@@ -26,6 +27,27 @@ public class MonAnCart implements Serializable {
         this.maNhaHang = maNhaHang;
         this.diaChiNhaHang = diaChiNhaHang;
         this.tenNhaHang = tenNhaHang;
+    }
+
+    public MonAnCart(String maMon, String tenMon, String chiTiet, String hinhAnh, double gia, int soLuongChon, String maNhaHang, String diaChiNhaHang, String tenNhaHang, String maUser) {
+        this.maMon = maMon;
+        this.tenMon = tenMon;
+        this.chiTiet = chiTiet;
+        this.hinhAnh = hinhAnh;
+        this.gia = gia;
+        this.soLuongChon = soLuongChon;
+        this.maNhaHang = maNhaHang;
+        this.diaChiNhaHang = diaChiNhaHang;
+        this.tenNhaHang = tenNhaHang;
+        this.maUser = maUser;
+    }
+
+    public String getMaUser() {
+        return maUser;
+    }
+
+    public void setMaUser(String maUser) {
+        this.maUser = maUser;
     }
 
     public String getMaMon() {
@@ -112,6 +134,7 @@ public class MonAnCart implements Serializable {
                 ", maNhaHang='" + maNhaHang + '\'' +
                 ", diaChiNhaHang='" + diaChiNhaHang + '\'' +
                 ", tenNhaHang='" + tenNhaHang + '\'' +
+                ", maUser='" + maUser + '\'' +
                 '}';
     }
 }

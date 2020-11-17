@@ -95,6 +95,7 @@
                             android:text="Đơn hàng của bạn"
                             android:textColor="#000000"
                             android:textSize="20dp"
+                            android:layout_marginLeft="5dp"
                             android:textStyle="bold"
                             android:layout_weight="2"/>
                         <Button
@@ -124,6 +125,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:cardCornerRadius="10dp"
                     app:cardUseCompatPadding="true">
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -146,7 +148,7 @@
                                 android:id="@+id/tvGiaMonAnGioHang"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="259.000 VND"
+                                android:text="0 VND"
                                 android:textColor="@color/colorPrimaryText"
                                 android:textSize="13sp"
                                 android:gravity="right" />
@@ -169,7 +171,7 @@
                                 android:id="@+id/tvPhiGiaoHang"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="12.000 VND"
+                                android:text="0 VND"
                                 android:textColor="@color/colorPrimaryText"
                                 android:textSize="13sp"
                                 android:gravity="right"
@@ -192,9 +194,9 @@
                                 android:id="@+id/tvTongTienThanhToan"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="171.000 VND"
+                                android:text="0 VND"
                                 android:textColor="@color/colorPrimaryText"
-                                android:textSize="17sp"
+                                android:textSize="17dp"
                                 android:textStyle="bold"
                                 android:gravity="right" />
                         </LinearLayout>
@@ -205,7 +207,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Đặt hàng"
-                    android:background="@color/bg_login"
+                    android:background="@drawable/border_button_cart"
                     android:layout_gravity="center"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"

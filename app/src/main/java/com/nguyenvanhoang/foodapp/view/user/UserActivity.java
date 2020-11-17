@@ -12,12 +12,13 @@ import android.widget.Button;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.nguyenvanhoang.foodapp.R;
+import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
 
 public class UserActivity extends AppCompatActivity {
     private Toolbar toolbar ;
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private Button btnDangNhap,btnDangKy,btnDangXuat;
+    private Button btnDangNhap,btnDangKy,btnDangXuat,btnGioHang;
     public static boolean TRANG_THAI_DANG_NHAP = false;
     public static String Email_Login = "";
     @Override
@@ -29,6 +30,7 @@ public class UserActivity extends AppCompatActivity {
         btnDangKy = (Button) findViewById(R.id.btnDangKy);
         btnDangNhap = (Button) findViewById(R.id.btnDangNhap);
         btnDangXuat = (Button) findViewById(R.id.btnDangXuat);
+        btnGioHang = (Button) findViewById(R.id.btnGioHang);
         btnDangXuat.setVisibility(View.GONE);
         initActionBar();
         if(TRANG_THAI_DANG_NHAP){
@@ -37,6 +39,12 @@ public class UserActivity extends AppCompatActivity {
             btnDangXuat.setVisibility(View.VISIBLE);
             setTitle(Email_Login);
         }
+        btnGioHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               startActivity(new Intent(getApplicationContext(), AddCartActivity.class));
+            }
+        });
         btnDangNhap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,7 +62,9 @@ public class UserActivity extends AppCompatActivity {
         btnDangXuat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnDangXuat.setVisibility(View.VISIBLE);
+                btnDangXuat.setVisibility(View.GONE);
+                btnDangNhap.setVisibility(View.VISIBLE);
+                btnDangKy.setVisibility(View.VISIBLE);
                 TRANG_THAI_DANG_NHAP = false;
                 Email_Login = "";
                 setTitle("Thông tin người dùng");

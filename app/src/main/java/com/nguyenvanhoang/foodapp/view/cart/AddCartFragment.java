@@ -26,11 +26,12 @@ import com.nguyenvanhoang.foodapp.database.CreateDatabaseSQLite;
 import com.nguyenvanhoang.foodapp.database.MonAnCart;
 import com.nguyenvanhoang.foodapp.entities.MonAn;
 import com.nguyenvanhoang.foodapp.entities.NhaHang;
+import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
 
-public class AddCartFragment extends BottomSheetDialogFragment implements View.OnClickListener {
+public class AddCartFragment extends BottomSheetDialogFragment {
     private ImageView imageViewMonAnCart;
     private TextView tvTenMonAnChon,tvSoLuongChon;
     private Button btnCongSoLuong,btnTruSoLuong,btnThemVaoGioHang;
@@ -106,11 +107,15 @@ public class AddCartFragment extends BottomSheetDialogFragment implements View.O
                 monAnCart.setMaNhaHang(monAnChon.getIdNhaHang());
                 monAnCart.setTenNhaHang(tenNhaHang_send);
                 monAnCart.setDiaChiNhaHang(diaChiNhaHang_send);
+                if(UserActivity.TRANG_THAI_DANG_NHAP == true){
+                    monAnCart.setMaUser(UserActivity.Email_Login);
+                }
+                else
+                    monAnCart.setMaUser("false");
                 MonAnCart monAnCart_Query;
                 monAnCart_Query = databaseSQLite.kiemTraTrungMaMonAn(monAnChon.getKeyID());
                 System.out.println(monAnCart_Query);
                 if(!(monAnCart_Query.getMaMon() == null)){
-                    Toast.makeText(getContext(),"Trung Ma",Toast.LENGTH_LONG).show();
                     int soLuongUpdate = soLuongChon + monAnCart_Query.getSoLuongChon();
                     if(databaseSQLite.updateSoLuongMonAn(monAnChon.getKeyID(),soLuongUpdate)>0){
                         startActivity(intent);
@@ -121,12 +126,5 @@ public class AddCartFragment extends BottomSheetDialogFragment implements View.O
                 }
             }
         });
-    }
-
-    @Override
-    public void onClick(View view) {
-
-    }
-    public interface ItemClickListener{
     }
 }

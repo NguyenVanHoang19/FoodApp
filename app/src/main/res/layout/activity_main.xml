@@ -66,6 +66,7 @@
                     android:drawableLeft="@drawable/ic_search_primary_light"
                     android:drawableStart="@drawable/ic_search_primary_light"
                     android:drawablePadding="10dp"
+                    android:textColorHint="@color/white"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
                     />

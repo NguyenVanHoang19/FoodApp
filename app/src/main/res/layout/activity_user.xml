@@ -24,6 +24,15 @@
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_height="match_parent">
         <Button
+            android:id="@+id/btnGioHang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Giỏ hàng"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            android:background="@drawable/border_bottom_button"
+            />
+        <Button
             android:id="@+id/btnDangKy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,6 +40,7 @@
             android:gravity="left|center"
             android:paddingLeft="10dp"
             android:background="@drawable/border_bottom_button"
+            android:layout_below="@+id/btnGioHang"
             />
 
         <Button

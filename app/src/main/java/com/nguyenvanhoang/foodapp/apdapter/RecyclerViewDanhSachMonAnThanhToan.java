@@ -16,6 +16,7 @@ import com.nguyenvanhoang.foodapp.R;
 import com.nguyenvanhoang.foodapp.database.CreateDatabaseSQLite;
 import com.nguyenvanhoang.foodapp.database.MonAnCart;
 import com.nguyenvanhoang.foodapp.entities.MonAn;
+import com.nguyenvanhoang.foodapp.interface_send_data.OnClick_MonAnThanhToan;
 import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
 import com.squareup.picasso.Picasso;
 
@@ -28,6 +29,7 @@ public class RecyclerViewDanhSachMonAnThanhToan extends RecyclerView.Adapter<Rec
     private double gia = 1;
     private int soLuong = 1;
     private   MonAnCart monAnCart = new MonAnCart();
+    OnClick_MonAnThanhToan  onClick_monAnThanhToan;
     public RecyclerViewDanhSachMonAnThanhToan(List<MonAnCart> monAnList, Context context) {
         this.monAnList = monAnList;
         this.context = context;
@@ -50,53 +52,57 @@ public class RecyclerViewDanhSachMonAnThanhToan extends RecyclerView.Adapter<Rec
         holder.tvChiTiet.setText(chiTiet.toString());
         monAnCart = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon());
         soLuong = monAnList.get(position).getSoLuongChon();
-        System.out.println("soluonglucdau: "+soLuong +" " + monAnCart.getMaMon());
         gia = monAnList.get(position).getGia();
         gia = gia*soLuong;
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         String giaFormat = decimalFormat.format(gia);
         holder.tvGiaTien.setText(giaFormat + " VNĐ");
         holder.tvSoLuongMonAnChonThanhToan.setText(soLuong + "");
-
-      // int soLuong_CartDB = monAnList.get(position).getSoLuongChon();
         holder.btnCongSoLuongThanhToan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int soLuongClick = 1;
                 soLuongClick = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon()).getSoLuongChon() + 1;
-                System.out.println("soluonglucsautang: "+soLuongClick);
                 if(holder.databaseSQLite.updateSoLuongMonAn(monAnList.get(position).getMaMon(),soLuongClick) > 0){
-                    System.out.println("da cap nhat thanh cong! " +monAnCart.getMaMon() + " " + soLuongClick);
+                    monAnCart = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon());
+                    System.out.println(monAnCart.getSoLuongChon() + " ma " + monAnList.get(position).getMaMon());
+                    int soLuongUpdate = monAnCart.getSoLuongChon();
+                    holder.tvSoLuongMonAnChonThanhToan.setText(soLuongUpdate+"");
+                    gia = monAnCart.getGia()*soLuongUpdate;
+                    DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
+                    String giaFormat = decimalFormat.format(gia);
+                    holder.tvGiaTien.setText(giaFormat + " VNĐ");
+                    monAnList.set(monAnList.indexOf(monAnList.get(position)),monAnCart);
+                    onClick_monAnThanhToan= (OnClick_MonAnThanhToan) context;
+                    onClick_monAnThanhToan.onClickBtn(holder.databaseSQLite.getAllMonAn(),position);
                 }
-                monAnCart = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon());
-                System.out.println(monAnCart.getSoLuongChon() + " ma " + monAnList.get(position).getMaMon());
-                int soLuongUpdate = monAnCart.getSoLuongChon();
-                holder.tvSoLuongMonAnChonThanhToan.setText(soLuongUpdate+"");
-                gia = monAnCart.getGia()*soLuongUpdate;
-                DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
-                String giaFormat = decimalFormat.format(gia);
-                holder.tvGiaTien.setText(giaFormat + " VNĐ");
-               // AddCartActivity.adapter.notifyDataSetChanged();
             }
         });
         holder.btnTruSoLuongThanhToan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(soLuong > 0){
-                    soLuong --;
-                    if(soLuong == 0){
-                        //AddCartActivity.monAnList.remove(position);
-                        holder.databaseSQLite.deleteMonAn(monAnList.get(position).getMaMon());
-                        AddCartActivity.adapter.notifyDataSetChanged();
+                int soLuongClick = 0;
+                soLuongClick = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon()).getSoLuongChon() - 1;
+                if(holder.databaseSQLite.updateSoLuongMonAn(monAnList.get(position).getMaMon(),soLuongClick) > 0){
+                    if(soLuongClick > 0){
+                        monAnCart = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon());
+                        int soLuongUpdate = monAnCart.getSoLuongChon();
+                        holder.tvSoLuongMonAnChonThanhToan.setText(soLuongUpdate+"");
+                        gia = monAnCart.getGia()*soLuongUpdate;
+                        DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
+                        String giaFormat = decimalFormat.format(gia);
+                        holder.tvGiaTien.setText(giaFormat + " VNĐ");
+                        onClick_monAnThanhToan= (OnClick_MonAnThanhToan) context;
+                        onClick_monAnThanhToan.onClickBtn(holder.databaseSQLite.getAllMonAn(),position);
                     }
-                    monAnCart = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon());
-                    int soLuongChonUpdate = soLuong + monAnCart.getSoLuongChon();
-                    holder.databaseSQLite.updateSoLuongMonAn(monAnCart.getMaMon(),soLuongChonUpdate);
-                    holder.tvSoLuongMonAnChonThanhToan.setText(soLuongChonUpdate+"");
-                    gia = gia*soLuongChonUpdate;
-                    DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
-                    String giaFormat = decimalFormat.format(gia);
-                    holder.tvGiaTien.setText(giaFormat + " VNĐ");
+                    if(soLuongClick == 0){
+                        if(holder.databaseSQLite.deleteMonAn(monAnCart.getMaMon()) >0 ){
+                            AddCartActivity.monAnCartList.remove(monAnList.get(position));
+                            AddCartActivity.adapter.notifyDataSetChanged();
+                            onClick_monAnThanhToan= (OnClick_MonAnThanhToan) context;
+                            onClick_monAnThanhToan.onClickBtn(holder.databaseSQLite.getAllMonAn(),position);
+                        }
+                    }
                 }
             }
         });
