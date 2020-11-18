@@ -1,10 +1,12 @@
 package com.nguyenvanhoang.foodapp.view.cart;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -30,6 +32,8 @@ import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddCartFragment extends BottomSheetDialogFragment {
     private ImageView imageViewMonAnCart;
@@ -95,36 +99,77 @@ public class AddCartFragment extends BottomSheetDialogFragment {
         btnThemVaoGioHang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),AddCartActivity.class);
-                //
-                MonAnCart monAnCart = new MonAnCart();
-                monAnCart.setMaMon(monAnChon.getKeyID());
-                monAnCart.setTenMon(monAnChon.getTenMon());
-                monAnCart.setChiTiet(monAnChon.getMoTa());
-                monAnCart.setHinhAnh(monAnChon.getHinhAnh());
-                monAnCart.setGia(monAnChon.getGiaTien());
-                monAnCart.setSoLuongChon(soLuongChon);
-                monAnCart.setMaNhaHang(monAnChon.getIdNhaHang());
-                monAnCart.setTenNhaHang(tenNhaHang_send);
-                monAnCart.setDiaChiNhaHang(diaChiNhaHang_send);
-                if(UserActivity.TRANG_THAI_DANG_NHAP == true){
-                    monAnCart.setMaUser(UserActivity.Email_Login);
+                //// kiem tra trung nha hang
+
+                // thong bao thay doi nha hang
+                if(checkCartTrungNhaHang()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setTitle("Thông báo");
+                    builder.setMessage("Bạn đã có 1 giỏ hàng ở 1 nhà hàng khác. \n" +
+                            "Bạn có muốn thay đổi giỏ hàng không?");
+                    builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            System.out.println(monAnChon.getIdNhaHang());
+
+                            List<MonAnCart> list = new ArrayList<>();
+                            list = databaseSQLite.getAllMonAnCartByUser(UserActivity.Email_Login);
+                            if(list.size() > 0){
+                                if(databaseSQLite.deleteGioHang(list.get(0).getMaNhaHang(),UserActivity.Email_Login) > 0){
+                                    themMonAnVaoGioHang();
+                                }
+                            }
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
-                else
-                    monAnCart.setMaUser("false");
-                MonAnCart monAnCart_Query;
-                monAnCart_Query = databaseSQLite.kiemTraTrungMaMonAn(monAnChon.getKeyID());
-                System.out.println(monAnCart_Query);
-                if(!(monAnCart_Query.getMaMon() == null)){
-                    int soLuongUpdate = soLuongChon + monAnCart_Query.getSoLuongChon();
-                    if(databaseSQLite.updateSoLuongMonAn(monAnChon.getKeyID(),soLuongUpdate)>0){
-                        startActivity(intent);
-                    }
-                }
-                else if(databaseSQLite.insertMonAn(monAnCart) > 0){
-                    startActivity(intent);
+                else{
+                    themMonAnVaoGioHang();
                 }
             }
         });
+    }
+    public boolean checkCartTrungNhaHang(){
+        List<MonAnCart> list = new ArrayList<>();
+        list = databaseSQLite.getAllMonAnCartByUser(UserActivity.Email_Login);
+        for(MonAnCart cart : list){
+            if( !monAnChon.getIdNhaHang().equals(cart.getMaNhaHang())){
+                return true;
+            }
+        }
+        return false;
+    }
+    public void themMonAnVaoGioHang(){
+        Intent intent = new Intent(getActivity(),AddCartActivity.class);
+        MonAnCart monAnCart = new MonAnCart();
+        monAnCart.setMaMon(monAnChon.getKeyID());
+        monAnCart.setTenMon(monAnChon.getTenMon());
+        monAnCart.setChiTiet(monAnChon.getMoTa());
+        monAnCart.setHinhAnh(monAnChon.getHinhAnh());
+        monAnCart.setGia(monAnChon.getGiaTien());
+        monAnCart.setSoLuongChon(soLuongChon);
+        monAnCart.setMaNhaHang(monAnChon.getIdNhaHang());
+        monAnCart.setTenNhaHang(tenNhaHang_send);
+        monAnCart.setDiaChiNhaHang(diaChiNhaHang_send);
+        MonAnCart monAnCart_Query = null;
+        monAnCart_Query = databaseSQLite.kiemTraTrungMaMonAn(monAnChon.getKeyID(),UserActivity.Email_Login);
+        monAnCart.setMaUser(UserActivity.Email_Login);
+        if(!(monAnCart_Query.getMaMon() == null)){
+            int soLuongUpdate = soLuongChon + monAnCart_Query.getSoLuongChon();
+            if(databaseSQLite.updateSoLuongMonAn(monAnChon.getKeyID(),soLuongUpdate,UserActivity.Email_Login) > 0){
+                startActivity(intent);
+            }
+        }
+        else if(databaseSQLite.insertMonAn(monAnCart) > 0){
+            System.out.println("da them : "+monAnCart);
+            startActivity(intent);
+        }
     }
 }

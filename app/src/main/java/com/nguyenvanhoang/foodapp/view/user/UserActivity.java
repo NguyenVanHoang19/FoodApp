@@ -20,7 +20,7 @@ public class UserActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Button btnDangNhap,btnDangKy,btnDangXuat,btnGioHang;
     public static boolean TRANG_THAI_DANG_NHAP = false;
-    public static String Email_Login = "";
+    public static String Email_Login = "false";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,15 +66,15 @@ public class UserActivity extends AppCompatActivity {
                 btnDangNhap.setVisibility(View.VISIBLE);
                 btnDangKy.setVisibility(View.VISIBLE);
                 TRANG_THAI_DANG_NHAP = false;
-                Email_Login = "";
-                setTitle("Thông tin người dùng");
+                Email_Login = "false";
+                setTitle("Cá nhân");
             }
         });
 
     }
     private void initActionBar() {
         setSupportActionBar(toolbar);
-        setTitle("Thông tin người dùng");
+        setTitle("Cá nhân");
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }

@@ -19,6 +19,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.nguyenvanhoang.foodapp.R;
+import com.nguyenvanhoang.foodapp.database.CreateDatabaseSQLite;
+import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
 import com.nguyenvanhoang.foodapp.view.home.MainActivity;
 
 public class LoginActivity extends AppCompatActivity {
@@ -27,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Button btnSignup, btnLogin, btnReset;
     private FirebaseUser user;
+    public static CreateDatabaseSQLite databaseSQLite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         btnSignup = (Button) findViewById(R.id.btn_signup);
         btnLogin = (Button) findViewById(R.id.btn_login);
         btnReset = (Button) findViewById(R.id.btn_reset_password);
+        databaseSQLite = new CreateDatabaseSQLite(getApplicationContext());
         auth = FirebaseAuth.getInstance();
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,8 +88,20 @@ public class LoginActivity extends AppCompatActivity {
                                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                         UserActivity.TRANG_THAI_DANG_NHAP = true;
                                         UserActivity.Email_Login = email;
-                                        startActivity(intent);
-                                        finish();
+                                        if(AddCartActivity.TRANG_THAI_CLICK_BUTTON_THANHTOAN_CHUA_LOGIN == true){
+                                            Intent intent1 = getIntent();
+                                            String idNhaHang = intent1.getStringExtra("idNhaHang");
+                                            databaseSQLite.deleteGioHang(idNhaHang,UserActivity.Email_Login);
+                                            databaseSQLite.updateUserMonAnCart(idNhaHang,UserActivity.Email_Login);
+                                            Intent intentCart = new Intent(LoginActivity.this,AddCartActivity.class);
+                                            startActivity(intentCart);
+                                            finish();
+                                        }
+                                        else{
+                                            startActivity(intent);
+                                            finish();
+                                        }
+
                                     }
                                     else {
                                         auth.signOut();

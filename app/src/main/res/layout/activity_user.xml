@@ -56,11 +56,12 @@
             android:id="@+id/btnDangXuat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left|center"
+            android:gravity="center"
             android:paddingLeft="10dp"
             android:layout_below="@id/btnDangNhap"
             android:text="Đăng xuất"
-            android:background="@color/white"
+            android:textColor="@color/colorAccent"
+            android:background="@drawable/transparent_bg_bordered_button"
              />
     </RelativeLayout>
 

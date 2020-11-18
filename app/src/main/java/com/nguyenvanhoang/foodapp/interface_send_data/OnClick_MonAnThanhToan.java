@@ -5,5 +5,5 @@ import com.nguyenvanhoang.foodapp.database.MonAnCart;
 import java.util.List;
 
 public interface OnClick_MonAnThanhToan {
-    void onClickBtn(List<MonAnCart> monAnCartList , int position);
+    void onClickBtn(int position);
 }

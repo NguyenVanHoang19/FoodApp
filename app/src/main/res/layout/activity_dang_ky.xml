@@ -11,6 +11,7 @@
         android:layout_height="fill_parent"
         android:background="@color/colorBackground"
         android:gravity="center"
+        android:padding="16dp"
         android:orientation="vertical">
 
         <ImageView
@@ -65,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@color/colorDangKky"
+            android:background="@drawable/border_button_cart"
             android:text="Đăng ký"
             android:textColor="@android:color/black"
             android:textStyle="bold" />

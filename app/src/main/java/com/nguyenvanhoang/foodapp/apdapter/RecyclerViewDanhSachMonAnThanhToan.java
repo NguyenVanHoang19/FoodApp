@@ -18,6 +18,7 @@ import com.nguyenvanhoang.foodapp.database.MonAnCart;
 import com.nguyenvanhoang.foodapp.entities.MonAn;
 import com.nguyenvanhoang.foodapp.interface_send_data.OnClick_MonAnThanhToan;
 import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
+import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
@@ -49,7 +50,7 @@ public class RecyclerViewDanhSachMonAnThanhToan extends RecyclerView.Adapter<Rec
         String tenMon = monAnList.get(position).getTenMon();
         holder.mealName.setText(tenMon);
         String chiTiet = monAnList.get(position).getChiTiet();
-        holder.tvChiTiet.setText(chiTiet.toString());
+        holder.tvChiTiet.setText(chiTiet);
         monAnCart = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon());
         soLuong = monAnList.get(position).getSoLuongChon();
         gia = monAnList.get(position).getGia();
@@ -63,7 +64,7 @@ public class RecyclerViewDanhSachMonAnThanhToan extends RecyclerView.Adapter<Rec
             public void onClick(View view) {
                 int soLuongClick = 1;
                 soLuongClick = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon()).getSoLuongChon() + 1;
-                if(holder.databaseSQLite.updateSoLuongMonAn(monAnList.get(position).getMaMon(),soLuongClick) > 0){
+                if(holder.databaseSQLite.updateSoLuongMonAn(monAnList.get(position).getMaMon(),soLuongClick,UserActivity.Email_Login) > 0){
                     monAnCart = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon());
                     System.out.println(monAnCart.getSoLuongChon() + " ma " + monAnList.get(position).getMaMon());
                     int soLuongUpdate = monAnCart.getSoLuongChon();
@@ -74,7 +75,7 @@ public class RecyclerViewDanhSachMonAnThanhToan extends RecyclerView.Adapter<Rec
                     holder.tvGiaTien.setText(giaFormat + " VNĐ");
                     monAnList.set(monAnList.indexOf(monAnList.get(position)),monAnCart);
                     onClick_monAnThanhToan= (OnClick_MonAnThanhToan) context;
-                    onClick_monAnThanhToan.onClickBtn(holder.databaseSQLite.getAllMonAn(),position);
+                    onClick_monAnThanhToan.onClickBtn(position);
                 }
             }
         });
@@ -83,7 +84,7 @@ public class RecyclerViewDanhSachMonAnThanhToan extends RecyclerView.Adapter<Rec
             public void onClick(View view) {
                 int soLuongClick = 0;
                 soLuongClick = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon()).getSoLuongChon() - 1;
-                if(holder.databaseSQLite.updateSoLuongMonAn(monAnList.get(position).getMaMon(),soLuongClick) > 0){
+                if(holder.databaseSQLite.updateSoLuongMonAn(monAnList.get(position).getMaMon(),soLuongClick,UserActivity.Email_Login) > 0){
                     if(soLuongClick > 0){
                         monAnCart = holder.databaseSQLite.timMonAnTheoMa(monAnList.get(position).getMaMon());
                         int soLuongUpdate = monAnCart.getSoLuongChon();
@@ -93,14 +94,15 @@ public class RecyclerViewDanhSachMonAnThanhToan extends RecyclerView.Adapter<Rec
                         String giaFormat = decimalFormat.format(gia);
                         holder.tvGiaTien.setText(giaFormat + " VNĐ");
                         onClick_monAnThanhToan= (OnClick_MonAnThanhToan) context;
-                        onClick_monAnThanhToan.onClickBtn(holder.databaseSQLite.getAllMonAn(),position);
+                        onClick_monAnThanhToan.onClickBtn(position);
                     }
                     if(soLuongClick == 0){
-                        if(holder.databaseSQLite.deleteMonAn(monAnCart.getMaMon()) >0 ){
+                        if(holder.databaseSQLite.deleteMonAn(monAnCart.getMaMon(), UserActivity.Email_Login) >0 ){
+                            System.out.println("mon an xoa :" +monAnCart);
+                            onClick_monAnThanhToan= (OnClick_MonAnThanhToan) context;
+                            onClick_monAnThanhToan.onClickBtn(soLuongClick);
                             AddCartActivity.monAnCartList.remove(monAnList.get(position));
                             AddCartActivity.adapter.notifyDataSetChanged();
-                            onClick_monAnThanhToan= (OnClick_MonAnThanhToan) context;
-                            onClick_monAnThanhToan.onClickBtn(holder.databaseSQLite.getAllMonAn(),position);
                         }
                     }
                 }
