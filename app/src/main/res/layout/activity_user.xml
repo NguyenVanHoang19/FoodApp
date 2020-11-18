@@ -23,11 +23,34 @@
         android:layout_width="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tvViTriCuaBan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vị trí của bạn"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:paddingLeft="10dp"
+            android:textSize="15dp"
+            />
+        <TextView
+            android:id="@+id/tvViTriHienTai"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#000000"
+            android:maxLines="2"
+            android:layout_below="@+id/tvViTriCuaBan"
+            android:paddingLeft="10dp"
+            android:textSize="15dp"
+            />
         <Button
             android:id="@+id/btnGioHang"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tvViTriHienTai"
             android:text="Giỏ hàng"
+            android:layout_marginTop="20dp"
             android:gravity="left|center"
             android:paddingLeft="10dp"
             android:background="@drawable/border_bottom_button"
