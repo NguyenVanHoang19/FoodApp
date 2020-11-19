@@ -29,6 +29,8 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.nguyenvanhoang.foodapp.R;
 import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
+import com.nguyenvanhoang.foodapp.view.locationmaps.Constaints;
+import com.nguyenvanhoang.foodapp.view.locationmaps.ServiceAddress;
 
 public class UserActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;

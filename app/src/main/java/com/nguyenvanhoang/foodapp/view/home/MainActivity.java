@@ -2,13 +2,22 @@ package com.nguyenvanhoang.foodapp.view.home;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.ResultReceiver;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -17,7 +26,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,6 +51,7 @@ import com.nguyenvanhoang.foodapp.dao.NhaHangDAO;
 import com.nguyenvanhoang.foodapp.dao.UserDAO;
 import com.nguyenvanhoang.foodapp.entities.Account;
 import com.nguyenvanhoang.foodapp.entities.ChiTietDonHang;
+import com.nguyenvanhoang.foodapp.entities.DiaChi;
 import com.nguyenvanhoang.foodapp.entities.DonHang;
 import com.nguyenvanhoang.foodapp.entities.KhuVuc;
 import com.nguyenvanhoang.foodapp.entities.LoaiMonAn;
@@ -53,7 +68,10 @@ import com.nguyenvanhoang.foodapp.interface_dao.LoaiNhaHang_Interface;
 import com.nguyenvanhoang.foodapp.interface_dao.MonAn_Interface;
 import com.nguyenvanhoang.foodapp.interface_dao.NhaHang_Interface;
 import com.nguyenvanhoang.foodapp.interface_dao.UserDAO_Interface;
+import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
 import com.nguyenvanhoang.foodapp.view.category.CategoryActivity;
+import com.nguyenvanhoang.foodapp.view.locationmaps.Constaints;
+import com.nguyenvanhoang.foodapp.view.locationmaps.ServiceAddress;
 import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 
 import java.io.File;
@@ -63,12 +81,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 public class MainActivity extends AppCompatActivity {
+    private static final int REQUEST_CODE_LOCATION_PERMISSION = 1;
+    public static double LATITUDE_CURRENT = 0.0;
+    public static double LONGTITUDE_CURRENT = 0.0;
+    public static String DIACHIHIENTAI = "";
     private ValueEventListener databaseReference ;
     private FirebaseDatabase firebaseDatabase ;
     private ViewPager viewPager;
     private RecyclerView recyclerViewMonAn ;
     private EditText edtTimKiemMonAn;
     private Button btnUser;
+    private FloatingActionButton btnThongBaoGioHang;
+    private TextView tvViTriHienTai ;
+    private ResultReceiver resultReceiver;
     private StorageReference mStorageRef;
     List<LoaiMonAn> loaiMonAns = new ArrayList<LoaiMonAn>();
 
@@ -78,11 +103,27 @@ public class MainActivity extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        resultReceiver = new AddressResultReceiver(new Handler());
         edtTimKiemMonAn = (EditText) findViewById(R.id.edtTimKiemMonAn);
         viewPager = (ViewPager) findViewById(R.id.viewPagerHeader);
         recyclerViewMonAn = (RecyclerView) findViewById(R.id.recyclerCategory);
         btnUser = (Button) findViewById(R.id.btnUser);
-
+        tvViTriHienTai = (TextView) findViewById(R.id.tvViTriHienTai);
+        btnThongBaoGioHang = (FloatingActionButton) findViewById(R.id.btnThongBaoGioHang);
+        // check quyen
+        if (ContextCompat.checkSelfPermission(
+                getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_CODE_LOCATION_PERMISSION);
+        } else {
+            getCurrentLocation();
+        }
+        btnThongBaoGioHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, AddCartActivity.class));
+            }
+        });
         btnUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-      // themDuLieu();
+       //themDuLieu();
         // load
         LoaiMonAn_Interface loaiMonAn_interface = new LoaiMonAnDAO();
         showLoading();
@@ -140,14 +181,87 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     public void showLoading() {
-        findViewById(R.id.shimmerMeal).setVisibility(View.VISIBLE);
         findViewById(R.id.shimmerCategory).setVisibility(View.VISIBLE);
     }
 
     public void hideLoading() {
-        findViewById(R.id.shimmerMeal).setVisibility(View.GONE);
         findViewById(R.id.shimmerCategory).setVisibility(View.GONE);
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_LOCATION_PERMISSION && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation();
+            } else {
+                Toast.makeText(this, "Chua Cho Phep Quyen Vi Tri", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /// get current location
+    @SuppressLint("MissingPermission")
+    public void getCurrentLocation() {
+        final LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationServices.getFusedLocationProviderClient(MainActivity.this)
+                .requestLocationUpdates(locationRequest, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        LocationServices.getFusedLocationProviderClient(MainActivity.this)
+                                .removeLocationUpdates(this);
+                        if(locationResult != null && locationResult.getLocations().size() > 0){
+                            int latestLocationIndex = locationResult.getLocations().size() - 1;
+                            double latitude =
+                                    locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                            LATITUDE_CURRENT = latitude;
+                            double longtitude =
+                                    locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                            LONGTITUDE_CURRENT = longtitude;
+                            Location location = new Location("providerNA");
+                            location.setLatitude(latitude);
+                            location.setLongitude(longtitude);
+                            fetchAddressFromLatLong(location);
+                        }
+                        else{
+                        }
+
+                    }
+                }, Looper.getMainLooper());
+    }
+
+    //////
+    private void fetchAddressFromLatLong(Location location){
+        Intent intent = new Intent(this, ServiceAddress.class);
+        intent.putExtra(Constaints.RECEIVER,resultReceiver);
+        intent.putExtra(Constaints.LOCATION_DATA_EXTRA,location);
+        startService(intent);
+    }
+    // google maps
+    private class AddressResultReceiver extends ResultReceiver {
+        AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+            if(resultCode ==  Constaints.SUCCESS_RESULT){
+                tvViTriHienTai.setText(resultData.getString(Constaints.RESULT_DATA_KEY));
+                DIACHIHIENTAI = resultData.getString(Constaints.RESULT_DATA_KEY);
+                DIACHIHIENTAI = resultData.getString(Constaints.RESULT_DATA_KEY);
+            }
+            else{
+                Toast.makeText(MainActivity.this,resultData.getString(Constaints.RESULT_DATA_KEY),Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
     public void themDuLieu(){
         // add user
         final User user = new User();
@@ -179,7 +293,11 @@ public class MainActivity extends AppCompatActivity {
         nhaHang.setIdKhuVuc(khuVuc.getKeyID());
         nhaHang.setIdLoai(loaiNhaHang.getKeyID());
         nhaHang.setSdt("0891723133");
-        nhaHang.setDiaChi("80/7 Đường số 03,Gò Vấp");
+        DiaChi diaChi = new DiaChi();
+        diaChi.setLatitude(10.846758);
+        diaChi.setLongtitude(106.670653);
+        diaChi.setFullDiaChi("28,P15,Lê Đức Thọ,Gò Vấp");
+        nhaHang.setDiaChi(diaChi);
         nhaHang.setGioiThieu("Quán nướng BBQ");
         nhaHang.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fypuxtw1511297463.jpg?alt=media&token=6705e9fb-d20f-4c84-808c-f364aabe9fa6");
         nhaHang.setTenNhaHang("Nhà Hàng BBQ Số 1");
@@ -189,7 +307,11 @@ public class MainActivity extends AppCompatActivity {
         nhaHang1.setIdKhuVuc(khuVuc.getKeyID());
         nhaHang1.setIdLoai(loaiNhaHang.getKeyID());
         nhaHang1.setSdt("08917238992");
-        nhaHang1.setDiaChi("70/20 Bến Nghé,Gò Vấp,Hồ Chí Minh");
+        DiaChi diaChi1 = new DiaChi();
+        diaChi1.setLatitude(10.845797);
+        diaChi1.setLongtitude(106.642546);
+        diaChi1.setFullDiaChi("69 Phạm Văn Chiêu,P.8,Gò Vấp,Hồ Chí Minh");
+        nhaHang1.setDiaChi(diaChi1);
         nhaHang1.setGioiThieu("Thiên đường món ngon");
         nhaHang1.setHinhAnh("https://firebasestorage.googleapis.com/v0/b/foodapp-1ad11.appspot.com/o/LoaiMonAn%2Fd8f6qx1604182128.jpg?alt=media&token=975e6245-1eb6-405f-afd3-3fcdb88aef26");
         nhaHang1.setTenNhaHang("Thức ăn nhanh Ngọc Hoa");
@@ -312,7 +434,5 @@ public class MainActivity extends AppCompatActivity {
 
         AccountDAO_Interface accountDAO_interface = new AccountDAO();
         accountDAO_interface.addAccount(account);
-
-
     }
 }

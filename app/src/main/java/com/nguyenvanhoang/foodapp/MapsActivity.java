@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -48,10 +49,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        Intent intent = getIntent();
+        double latitude = intent.getDoubleExtra("latNhaHang",0);
+        double longtitude = intent.getDoubleExtra("longNhaHang",0);
+        String tenNhaHang = intent.getStringExtra("tenNhaHang");
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(10.846049, 106.642581);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Nhà hàng BBQ số 1"));
+        LatLng sydney = new LatLng(latitude, longtitude);
+        System.out.println(latitude);
+        System.out.println(longtitude);
+        mMap.addMarker(new MarkerOptions().position(sydney).title(tenNhaHang));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,18));
     }
     private void getLocationPermission() {

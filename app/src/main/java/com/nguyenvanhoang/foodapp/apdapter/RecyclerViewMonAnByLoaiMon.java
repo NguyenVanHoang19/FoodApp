@@ -1,6 +1,7 @@
 package com.nguyenvanhoang.foodapp.apdapter;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +13,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.nguyenvanhoang.foodapp.R;
+import com.nguyenvanhoang.foodapp.entities.DiaChi;
 import com.nguyenvanhoang.foodapp.entities.MonAn;
 import com.nguyenvanhoang.foodapp.entities.NhaHang;
+import com.nguyenvanhoang.foodapp.view.home.MainActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Locale;
 
 public class RecyclerViewMonAnByLoaiMon extends RecyclerView.Adapter<RecyclerViewMonAnByLoaiMon.RecyclerViewHolder> {
     private List<MonAn> monAnList;
@@ -56,7 +61,30 @@ public class RecyclerViewMonAnByLoaiMon extends RecyclerView.Adapter<RecyclerVie
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     NhaHang nhaHang = dataSnapshot.getValue(NhaHang.class);
                     holder.textViewTenNhaHang.setText(nhaHang.getTenNhaHang());
-                    holder.textViewDiaChi.setText(nhaHang.getDiaChi());
+                    holder.textViewDiaChi.setText(nhaHang.getDiaChi().getFullDiaChi());
+                    float [] result = new float[2];
+                    Location.distanceBetween(MainActivity.LATITUDE_CURRENT,MainActivity.LONGTITUDE_CURRENT,nhaHang.getDiaChi().getLatitude(),nhaHang.getDiaChi().getLongtitude(),result);
+                    float ketQuaMet = result[0];
+                    float ketQuaKm = ketQuaMet /1000;
+                    holder.textViewKhoangCach.setText(String.format(Locale.US,"%.2f km",ketQuaKm));
+//                    DatabaseReference databaseReference = firebaseDatabase.getReference().child("nhahang")
+//                                                                                                        .child(nhaHang.getKeyID())
+//                                                                                                        .child("diaChi");
+//                     databaseReference.addValueEventListener(new ValueEventListener() {
+//                         @Override
+//                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                             DiaChi diaChi = dataSnapshot.getValue(DiaChi.class);
+//                             nhaHang.setDiaChi(diaChi);
+//                             holder.textViewTenNhaHang.setText(nhaHang.getTenNhaHang());
+//                             holder.textViewDiaChi.setText(nhaHang.getDiaChi().getFullDiaChi());
+//                         }
+//
+//                         @Override
+//                         public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                         }
+//                     });
+
                 }
 
                 @Override
@@ -74,7 +102,7 @@ public class RecyclerViewMonAnByLoaiMon extends RecyclerView.Adapter<RecyclerVie
     }
     public class RecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private ImageView doAnHinhAnh ;
-        private TextView textViewName,textViewTenNhaHang,textViewDiaChi;
+        private TextView textViewName,textViewTenNhaHang,textViewDiaChi,textViewKhoangCach;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -82,6 +110,7 @@ public class RecyclerViewMonAnByLoaiMon extends RecyclerView.Adapter<RecyclerVie
             textViewName = (TextView) itemView.findViewById(R.id.mealName);
             textViewTenNhaHang = (TextView) itemView.findViewById(R.id.tvTenNhaHang);
             textViewDiaChi = (TextView) itemView.findViewById(R.id.tvDiaChiNhaHang);
+            textViewKhoangCach = (TextView) itemView.findViewById(R.id.tvKhoangCach);
             itemView.setOnClickListener(this);
         }
 

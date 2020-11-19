@@ -115,6 +115,18 @@
                             android:textColor="@color/colorPrimaryText"
                             android:textSize="13sp"
                             android:textStyle="italic"/>
+                        <TextView
+                            android:id="@+id/tvKhoangCach"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="14dp"
+                            android:paddingTop="5dp"
+                            android:paddingRight="14dp"
+                            android:paddingBottom="14dp"
+                            android:text="Cách bạn 2 km"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textSize="13sp"
+                            android:textStyle="italic|bold"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView

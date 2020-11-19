@@ -1,6 +1,7 @@
 package com.nguyenvanhoang.foodapp.view.category;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.nguyenvanhoang.foodapp.dao.MonAnDAO;
 import com.nguyenvanhoang.foodapp.entities.MonAn;
 import com.nguyenvanhoang.foodapp.interface_dao.MonAn_Interface;
 import com.nguyenvanhoang.foodapp.view.detail.DetailActivity;
+import com.nguyenvanhoang.foodapp.view.home.MainActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -133,18 +135,13 @@ public class CategoryFragment extends Fragment{
     public  void hideLoading() {
         progressBar.setVisibility(View.GONE);
     }
-    public void setMonAnByLoaiMon(List<MonAn> monAns){
-        RecyclerViewMonAnByLoaiMon adapter = new RecyclerViewMonAnByLoaiMon(monAns,getActivity());
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
-        recyclerView.setClipToPadding(false);
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new RecyclerViewMonAnByLoaiMon.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
 
-            }
-        });
-        adapter.notifyDataSetChanged();
+    public float  tinhKhoangCach(double latHienTai,double longHienTai,double latNhaHang,double longNhaHang){
+        float [] result = new float[2];
+        Location.distanceBetween(latHienTai,longHienTai,latNhaHang,longNhaHang,result);
+        float ketQuaMet = result[0];
+        float ketQuaKm = ketQuaMet /1000;
+        return ketQuaKm;
     }
 
 }

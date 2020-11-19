@@ -46,7 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".view.user.ServiceAddress"/>
+        <service android:name=".view.locationmaps.ServiceAddress"/>
     </application>
 
 </manifest>

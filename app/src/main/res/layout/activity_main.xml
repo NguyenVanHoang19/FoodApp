@@ -51,25 +51,53 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="15dp"
-                app:cardBackgroundColor="@color/colorPrimaryDark"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp">
-                <EditText
-                    android:id="@+id/edtTimKiemMonAn"
+                <LinearLayout
+                    android:id="@+id/linearViTri"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:padding="10dp"
-                    android:hint="Tìm kiếm món ăn"
-                    android:textColor="@color/colorPrimaryLight"
-                    android:gravity="center_vertical"
-                    android:background="@null"
-                    android:drawableLeft="@drawable/ic_search_primary_light"
-                    android:drawableStart="@drawable/ic_search_primary_light"
-                    android:drawablePadding="10dp"
-                    android:textColorHint="@color/white"
-                    android:singleLine="true"
-                    android:imeOptions="actionDone"
-                    />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <EditText
+                        android:id="@+id/edtTimKiemMonAn"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:padding="10dp"
+                        android:hint="Tìm kiếm món ăn"
+                        android:textColor="@color/colorPrimaryLight"
+                        android:gravity="center_vertical"
+                        android:background="@color/colorPrimaryDark"
+                        android:drawableLeft="@drawable/ic_search_primary_light"
+                        android:drawableStart="@drawable/ic_search_primary_light"
+                        android:drawablePadding="10dp"
+                        android:textColorHint="@color/white"
+                        android:singleLine="true"
+                        android:imeOptions="actionDone"
+                        />
+                    <TextView
+                        android:id="@+id/tvViTriCuaBan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Vị trí của bạn"
+                        android:background="@color/colorPrimary"
+                        android:textColor="#ffffff"
+                        android:textSize="19dp"
+                        android:textStyle="bold"
+                        android:paddingTop="20dp"
+                        />
+                    <TextView
+                        android:id="@+id/tvViTriHienTai"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:background="@color/colorPrimary"
+                        android:textColor="#ffffff"
+                        android:textSize="12dp"
+                        android:paddingLeft="2dp"
+                        android:maxLines="2"
+                        android:paddingTop="5dp"
+                        />
+                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
@@ -81,11 +109,7 @@
                 android:layout_below="@id/cardSearch"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="150dp" />
-
-            <include android:id="@+id/shimmerMeal"
-                layout="@layout/item_view_pager_header_shimmer" />
-
+                android:layout_height="50dp" />
             <TextView
                 android:id="@+id/titleCategory"
                 android:text="@string/meal_categories"
@@ -112,8 +136,8 @@
                 android:layout_marginBottom="50dp" />
             <include android:id="@+id/shimmerCategory"
                 layout="@layout/item_recycler_category_shimmer" />
-
             <TextView
+                android:visibility="visible"
                 android:padding="10dp"
                 android:gravity="center"
                 android:textColor="@color/colorWhite"
@@ -123,7 +147,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"/>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btnThongBaoGioHang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="55dp"
+                android:layout_marginRight="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                app:backgroundTint="@color/btn_logut_bg"
+                android:src="@drawable/ic_baseline_shopping_cart_24"
+                />
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+               android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/colorPrimary"
+                app:itemIconTint="@color/colorWhite"
+                app:itemTextColor="@color/colorWhite"
+                app:menu="@menu/navigation"
+                app:itemIconSize="20dp"
+                android:foreground="?attr/selectableItemBackground"
+                />
         </RelativeLayout>
-
     </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

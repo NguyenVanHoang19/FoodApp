@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,10 +35,12 @@ import com.nguyenvanhoang.foodapp.entities.NhaHang;
 import com.nguyenvanhoang.foodapp.interface_dao.MonAn_Interface;
 import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
 import com.nguyenvanhoang.foodapp.view.cart.AddCartFragment;
+import com.nguyenvanhoang.foodapp.view.home.MainActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
     private Toolbar toolbar ;
@@ -49,11 +52,14 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tvMoTaNhaHang;
     private TextView tvDiaChiDetail;
     private TextView tvGioMoCua;
+    private TextView tvKhoanCach;
     private RecyclerView recyclerViewDanhSachMonAnDetail;
     private ValueEventListener databaseReference ;
     private FirebaseDatabase firebaseDatabase ;
     private String tenNhaHang_SendCart = "";
     private String diaChiNhaHang_SendCart = "";
+    private double latNhaHang = 0 ;
+    private double longNhaHang = 0 ;
     List<MonAn> monAnList = new ArrayList<MonAn>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,7 @@ public class DetailActivity extends AppCompatActivity {
         tvMoTaNhaHang = (TextView) findViewById(R.id.tvMoTaNhaHang);
         tvGioMoCua = (TextView) findViewById(R.id.tvGioMoCua);
         hinhAnhGoogleMaps = (Button) findViewById(R.id.imageViewMaps);
+        tvKhoanCach = (TextView) findViewById(R.id.tvKhoangCach);
         recyclerViewDanhSachMonAnDetail = (RecyclerView) findViewById(R.id.recyclerViewDanhSachMonAnDetail);
         setupActionBar();
         Intent intent =getIntent();
@@ -88,6 +95,9 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(getApplicationContext(), MapsActivity.class);
+                intent1.putExtra("latNhaHang",latNhaHang);
+                intent1.putExtra("longNhaHang",longNhaHang);
+                intent1.putExtra("tenNhaHang",tenNhaHang_SendCart);
                 startActivity(intent1);
             }
         });
@@ -101,8 +111,15 @@ public class DetailActivity extends AppCompatActivity {
                 tvTenNhaHang.setText(nhaHang.getTenNhaHang());
                 tvMoTaNhaHang.setText(nhaHang.getGioiThieu()+ " ");
                 tenNhaHang_SendCart = nhaHang.getTenNhaHang();
-                diaChiNhaHang_SendCart = nhaHang.getDiaChi();
-                tvDiaChiDetail.setText(nhaHang.getDiaChi() + " ");
+                diaChiNhaHang_SendCart = nhaHang.getDiaChi().getFullDiaChi();
+                tvDiaChiDetail.setText(nhaHang.getDiaChi().getFullDiaChi() + " ");
+                latNhaHang = nhaHang.getDiaChi().getLatitude();
+                longNhaHang = nhaHang.getDiaChi().getLongtitude();
+                float [] result = new float[2];
+                Location.distanceBetween(MainActivity.LATITUDE_CURRENT,MainActivity.LONGTITUDE_CURRENT,nhaHang.getDiaChi().getLatitude(),nhaHang.getDiaChi().getLongtitude(),result);
+                float ketQuaMet = result[0];
+                float ketQuaKm = ketQuaMet /1000;
+                tvKhoanCach.setText(String.format(Locale.US,"Cách bạn %.2f km",ketQuaKm));
                 // them gio mo cua
                 Picasso.get().load(nhaHang.getHinhAnh()).placeholder(R.drawable.shadow_bottom_to_top).into(hinhAnhThumb);
             }

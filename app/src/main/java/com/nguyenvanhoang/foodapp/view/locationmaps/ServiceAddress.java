@@ -1,4 +1,4 @@
-package com.nguyenvanhoang.foodapp.view.user;
+package com.nguyenvanhoang.foodapp.view.locationmaps;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -8,11 +8,14 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+
 import androidx.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
 public class ServiceAddress extends IntentService {
     private ResultReceiver resultReceiver;
     public ServiceAddress() {

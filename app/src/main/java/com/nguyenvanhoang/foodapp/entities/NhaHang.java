@@ -9,12 +9,12 @@ public class NhaHang implements Serializable {
     private String idKhuVuc;
     private String idLoai;
     private String tenNhaHang;
-    private String diaChi;
+    private DiaChi diaChi;
     private String sdt ;
     private String gioiThieu;
     private String hinhAnh;
 
-    public NhaHang(String keyID, String keyIdAccount, String emailNhaHang, String idKhuVuc, String idLoai, String tenNhaHang, String diaChi, String sdt, String gioiThieu, String hinhAnh) {
+    public NhaHang(String keyID, String keyIdAccount, String emailNhaHang, String idKhuVuc, String idLoai, String tenNhaHang, DiaChi diaChi, String sdt, String gioiThieu, String hinhAnh) {
         this.keyID = keyID;
         this.keyIdAccount = keyIdAccount;
         this.emailNhaHang = emailNhaHang;
@@ -27,16 +27,8 @@ public class NhaHang implements Serializable {
         this.hinhAnh = hinhAnh;
     }
 
-    public NhaHang(String keyID) {
-        this.keyID = keyID;
-    }
-
-    public String getKeyIdAccount() {
-        return keyIdAccount;
-    }
-
-    public void setKeyIdAccount(String keyIdAccount) {
-        this.keyIdAccount = keyIdAccount;
+    public NhaHang() {
+        super();
     }
 
     public String getKeyID() {
@@ -47,8 +39,12 @@ public class NhaHang implements Serializable {
         this.keyID = keyID;
     }
 
-    public NhaHang() {
-        super();
+    public String getKeyIdAccount() {
+        return keyIdAccount;
+    }
+
+    public void setKeyIdAccount(String keyIdAccount) {
+        this.keyIdAccount = keyIdAccount;
     }
 
     public String getEmailNhaHang() {
@@ -83,11 +79,11 @@ public class NhaHang implements Serializable {
         this.tenNhaHang = tenNhaHang;
     }
 
-    public String getDiaChi() {
+    public DiaChi getDiaChi() {
         return diaChi;
     }
 
-    public void setDiaChi(String diaChi) {
+    public void setDiaChi(DiaChi diaChi) {
         this.diaChi = diaChi;
     }
 
@@ -113,5 +109,21 @@ public class NhaHang implements Serializable {
 
     public void setHinhAnh(String hinhAnh) {
         this.hinhAnh = hinhAnh;
+    }
+
+    @Override
+    public String toString() {
+        return "NhaHang{" +
+                "keyID='" + keyID + '\'' +
+                ", keyIdAccount='" + keyIdAccount + '\'' +
+                ", emailNhaHang='" + emailNhaHang + '\'' +
+                ", idKhuVuc='" + idKhuVuc + '\'' +
+                ", idLoai='" + idLoai + '\'' +
+                ", tenNhaHang='" + tenNhaHang + '\'' +
+                ", diaChi=" + diaChi +
+                ", sdt='" + sdt + '\'' +
+                ", gioiThieu='" + gioiThieu + '\'' +
+                ", hinhAnh='" + hinhAnh + '\'' +
+                '}';
     }
 }

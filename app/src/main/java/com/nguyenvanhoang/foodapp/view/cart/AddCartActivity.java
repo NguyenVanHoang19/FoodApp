@@ -30,6 +30,7 @@ import com.nguyenvanhoang.foodapp.entities.NhaHang;
 import com.nguyenvanhoang.foodapp.interface_dao.ChiTietDonHang_Interface;
 import com.nguyenvanhoang.foodapp.interface_dao.DonHang_Interface;
 import com.nguyenvanhoang.foodapp.interface_send_data.OnClick_MonAnThanhToan;
+import com.nguyenvanhoang.foodapp.view.home.MainActivity;
 import com.nguyenvanhoang.foodapp.view.user.LoginActivity;
 import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 
@@ -43,7 +44,7 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private RecyclerView recyclerViewDanhSachMonAnThanhToan;
-    private TextView tvGiaMonAnGioHang,tvTongTienThanhToan,tvPhiGiaoHang,tvTenNhaHang;
+    private TextView tvGiaMonAnGioHang,tvTongTienThanhToan,tvPhiGiaoHang,tvTenNhaHang,tvDiaChiGiaoHangDetail;
     private Button btnTongThanhToan,btnThemMon;
     private final double PHI_GIAO_HANG = 12000;
     public static RecyclerViewDanhSachMonAnThanhToan adapter;
@@ -68,6 +69,7 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
         tvPhiGiaoHang = (TextView) findViewById(R.id.tvPhiGiaoHang);
         btnTongThanhToan = (Button) findViewById(R.id.btnTongThanhToan);
         btnThemMon = (Button) findViewById(R.id.btnThemMon);
+        tvDiaChiGiaoHangDetail = (TextView) findViewById(R.id.tvDiaChiGiaoHangDetail);
         tvPhiGiaoHang.setText(decimalFormat.format(PHI_GIAO_HANG) + " VNĐ");
         setupActionBar();
         databaseSQLite = new CreateDatabaseSQLite(getApplicationContext());
@@ -87,6 +89,7 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
             tvGiaMonAnGioHang.setText(decimalFormat.format(tongGiaTienMonAn) + " VNĐ");
             tvTongTienThanhToan.setText(decimalFormat.format(tongGiaTienMonAn + PHI_GIAO_HANG) + " VNĐ");
             tvTenNhaHang.setText(monAnCartList.get(0).getTenNhaHang());
+            tvDiaChiGiaoHangDetail.setText(MainActivity.DIACHIHIENTAI+"");
         }
         adapter = new RecyclerViewDanhSachMonAnThanhToan(monAnCartList,this);
         recyclerViewDanhSachMonAnThanhToan.setLayoutManager(new GridLayoutManager(this,1));
