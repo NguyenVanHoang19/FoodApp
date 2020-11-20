@@ -3,11 +3,16 @@ package com.nguyenvanhoang.foodapp.view.cart;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +39,7 @@ import com.nguyenvanhoang.foodapp.view.home.MainActivity;
 import com.nguyenvanhoang.foodapp.view.user.LoginActivity;
 import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +60,7 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
     public static boolean TRANG_THAI_CLICK_BUTTON_THANHTOAN_CHUA_LOGIN = false;
     private int soLuongChon= 1;
     public static double giaTien = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +81,9 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
         setupActionBar();
         databaseSQLite = new CreateDatabaseSQLite(getApplicationContext());
         monAnCartList =  databaseSQLite.getAllMonAnCartByUser(UserActivity.Email_Login);
+        // activity thong tin don
+        Intent intentThongTinDonHang = new Intent(AddCartActivity.this,ThongTinDonHangActivity.class);
+        //
         if(monAnCartList.size() < 1 ){
             btnTongThanhToan.setEnabled(false);
         }
@@ -90,6 +100,16 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
             tvTongTienThanhToan.setText(decimalFormat.format(tongGiaTienMonAn + PHI_GIAO_HANG) + " VNĐ");
             tvTenNhaHang.setText(monAnCartList.get(0).getTenNhaHang());
             tvDiaChiGiaoHangDetail.setText(MainActivity.DIACHIHIENTAI+"");
+            // goi gui lieu tu addcartactivity
+            Intent intentNhanDuLieu = getIntent();
+            System.out.println("du lieu nhan tu add"+intentNhanDuLieu.getDoubleExtra("latNhaHang",0));
+            // goi du lieu
+            intentThongTinDonHang.putExtra("tenNhaHang",monAnCartList.get(0).getTenNhaHang());
+            intentThongTinDonHang.putExtra("maNhaHang",monAnCartList.get(0).getMaNhaHang());
+            intentThongTinDonHang.putExtra("diaChiGiaoHang",MainActivity.DIACHIHIENTAI + "");
+            intentThongTinDonHang.putExtra("giaMonAn",tongGiaTienMonAn);
+            intentThongTinDonHang.putExtra("tongThanhToan",tongGiaTienMonAn + PHI_GIAO_HANG);
+            intentThongTinDonHang.putExtra("monAnCartList",(Serializable) monAnCartList);
         }
         adapter = new RecyclerViewDanhSachMonAnThanhToan(monAnCartList,this);
         recyclerViewDanhSachMonAnThanhToan.setLayoutManager(new GridLayoutManager(this,1));
@@ -99,9 +119,10 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
         btnThemMon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                startActivity(new Intent(AddCartActivity.this, MainActivity.class));
             }
         });
+
         btnTongThanhToan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,8 +146,26 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
                             tvTongTienThanhToan.setText("0 VNĐ");
                         }
                     });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    // show notification thong bao
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                        NotificationChannel channel = new NotificationChannel("Thông báo","Thông báo đặt hàng", NotificationManager.IMPORTANCE_DEFAULT);
+                        NotificationManager manager = getSystemService(NotificationManager.class);
+                        manager.createNotificationChannel(channel);
+                    }
+                    NotificationCompat.Builder notifiBuider = new NotificationCompat.Builder(AddCartActivity.this,"Thông báo");
+                    notifiBuider.setContentTitle("Thông báo đơn hàng");
+                    notifiBuider.setContentText("Đơn hàng đã đặt thành công!!! " + tvTongTienThanhToan.getText().toString());
+                    notifiBuider.setSmallIcon(R.drawable.logo);
+                    notifiBuider.setAutoCancel(true);
+                    NotificationManagerCompat managerCompat = NotificationManagerCompat.from(AddCartActivity.this);
+                    managerCompat.notify(1,notifiBuider.build());
+                    //
+                    //AlertDialog alertDialog = builder.create();
+                    //alertDialog.show();
+                    // show thong tin don hang maps
+                    TRANG_THAI_CLICK_BUTTON_THANHTOAN_CHUA_LOGIN = false;
+                    startActivity(intentThongTinDonHang);
+                    finish();
                 }
                 else{
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddCartActivity.this);
@@ -135,11 +174,11 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             TRANG_THAI_CLICK_BUTTON_THANHTOAN_CHUA_LOGIN = true;
-                            Intent intent = new Intent(AddCartActivity.this,LoginActivity.class);
+                            Intent intentDangNhap = new Intent(AddCartActivity.this,LoginActivity.class);
                             if(monAnCartList.size() > 0){
-                                intent.putExtra("idNhaHang",monAnCartList.get(0).getMaNhaHang());
+                                intentDangNhap.putExtra("idNhaHang",monAnCartList.get(0).getMaNhaHang());
                             }
-                            startActivity(intent);
+                            startActivity(intentDangNhap);
                         }
                     });
                     AlertDialog alertDialog = builder.create();

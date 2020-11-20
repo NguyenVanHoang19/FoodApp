@@ -13,7 +13,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -30,13 +29,11 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.nguyenvanhoang.foodapp.R;
 import com.nguyenvanhoang.foodapp.apdapter.RecyclerViewHomeAdapter;
@@ -72,10 +69,9 @@ import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
 import com.nguyenvanhoang.foodapp.view.category.CategoryActivity;
 import com.nguyenvanhoang.foodapp.view.locationmaps.Constaints;
 import com.nguyenvanhoang.foodapp.view.locationmaps.ServiceAddress;
+import com.nguyenvanhoang.foodapp.view.searchviewmonan.SearchViewMonAnActivity;
 import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase firebaseDatabase ;
     private ViewPager viewPager;
     private RecyclerView recyclerViewMonAn ;
-    private EditText edtTimKiemMonAn;
+    private TextView tvTimKiemMonAn;
     private Button btnUser;
     private FloatingActionButton btnThongBaoGioHang;
     private TextView tvViTriHienTai ;
@@ -104,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         resultReceiver = new AddressResultReceiver(new Handler());
-        edtTimKiemMonAn = (EditText) findViewById(R.id.edtTimKiemMonAn);
+        tvTimKiemMonAn = (TextView) findViewById(R.id.edtTimKiemMonAn);
         viewPager = (ViewPager) findViewById(R.id.viewPagerHeader);
         recyclerViewMonAn = (RecyclerView) findViewById(R.id.recyclerCategory);
         btnUser = (Button) findViewById(R.id.btnUser);
@@ -164,19 +160,35 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("loaiMon", (Serializable) loaiMonAns);
                 intent.putExtra("viTri",position);
                 startActivity(intent);
-
             }
         });
         homeAdapter.notifyDataSetChanged();
-        edtTimKiemMonAn.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_DONE){
-              //      Toast.makeText(getApplicationContext(),edtTimKiemMonAn.getText().toString(),Toast.LENGTH_LONG).show();
 
-                    return true;
+        ///// mon an
+
+        MonAn_Interface monAn_interface = new MonAnDAO();
+        List<MonAn> monAnList = new ArrayList<MonAn>();
+        monAn_interface.getAllMonAn().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    MonAn monAn = snapshot.getValue(MonAn.class);
+                    monAnList.add(monAn);
+                    System.out.println(snapshot.getValue().toString());
                 }
-                return false;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        tvTimKiemMonAn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SearchViewMonAnActivity.class);
+                intent.putExtra("monAnList", (Serializable) monAnList);
+                startActivity(intent);
             }
         });
     }

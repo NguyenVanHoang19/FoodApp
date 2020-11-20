@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -29,11 +27,9 @@ import com.nguyenvanhoang.foodapp.MapsActivity;
 import com.nguyenvanhoang.foodapp.R;
 import com.nguyenvanhoang.foodapp.apdapter.RecyclerViewDanhSachMonAnCuaNhaHang;
 import com.nguyenvanhoang.foodapp.dao.MonAnDAO;
-import com.nguyenvanhoang.foodapp.entities.LoaiMonAn;
 import com.nguyenvanhoang.foodapp.entities.MonAn;
 import com.nguyenvanhoang.foodapp.entities.NhaHang;
 import com.nguyenvanhoang.foodapp.interface_dao.MonAn_Interface;
-import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
 import com.nguyenvanhoang.foodapp.view.cart.AddCartFragment;
 import com.nguyenvanhoang.foodapp.view.home.MainActivity;
 import com.squareup.picasso.Picasso;
@@ -52,7 +48,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView tvMoTaNhaHang;
     private TextView tvDiaChiDetail;
     private TextView tvGioMoCua;
-    private TextView tvKhoanCach;
+    private TextView tvKhoangCach;
     private RecyclerView recyclerViewDanhSachMonAnDetail;
     private ValueEventListener databaseReference ;
     private FirebaseDatabase firebaseDatabase ;
@@ -60,6 +56,7 @@ public class DetailActivity extends AppCompatActivity {
     private String diaChiNhaHang_SendCart = "";
     private double latNhaHang = 0 ;
     private double longNhaHang = 0 ;
+    private float ketQuaKm = 0;
     List<MonAn> monAnList = new ArrayList<MonAn>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +72,7 @@ public class DetailActivity extends AppCompatActivity {
         tvMoTaNhaHang = (TextView) findViewById(R.id.tvMoTaNhaHang);
         tvGioMoCua = (TextView) findViewById(R.id.tvGioMoCua);
         hinhAnhGoogleMaps = (Button) findViewById(R.id.imageViewMaps);
-        tvKhoanCach = (TextView) findViewById(R.id.tvKhoangCach);
+        tvKhoangCach = (TextView) findViewById(R.id.tvKhoangCach);
         recyclerViewDanhSachMonAnDetail = (RecyclerView) findViewById(R.id.recyclerViewDanhSachMonAnDetail);
         setupActionBar();
         Intent intent =getIntent();
@@ -87,7 +84,7 @@ public class DetailActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new RecyclerViewDanhSachMonAnCuaNhaHang.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                AddCartFragment addCartFragment = AddCartFragment.newInstance(monAnList.get(position),tenNhaHang_SendCart,diaChiNhaHang_SendCart);
+                AddCartFragment addCartFragment = AddCartFragment.newInstance(monAnList.get(position),tenNhaHang_SendCart,diaChiNhaHang_SendCart,latNhaHang,longNhaHang,ketQuaKm);
                 addCartFragment.show(getSupportFragmentManager(),"Thêm vào giỏ hàng");
             }
         });
@@ -118,8 +115,8 @@ public class DetailActivity extends AppCompatActivity {
                 float [] result = new float[2];
                 Location.distanceBetween(MainActivity.LATITUDE_CURRENT,MainActivity.LONGTITUDE_CURRENT,nhaHang.getDiaChi().getLatitude(),nhaHang.getDiaChi().getLongtitude(),result);
                 float ketQuaMet = result[0];
-                float ketQuaKm = ketQuaMet /1000;
-                tvKhoanCach.setText(String.format(Locale.US,"Cách bạn %.2f km",ketQuaKm));
+                ketQuaKm = ketQuaMet /1000;
+                tvKhoangCach.setText(String.format(Locale.US,"Cách bạn %.2f km",ketQuaKm));
                 // them gio mo cua
                 Picasso.get().load(nhaHang.getHinhAnh()).placeholder(R.drawable.shadow_bottom_to_top).into(hinhAnhThumb);
             }

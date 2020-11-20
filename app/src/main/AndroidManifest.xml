@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nguyenvanhoang.foodapp">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -9,6 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,11 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.cart.AddCartActivity"></activity>
-        <activity android:name=".view.user.ResetPasswordActivity" />
-        <activity android:name=".view.user.LoginActivity" />
-        <activity android:name=".view.user.DangKyActivity" />
-        <activity android:name=".view.user.UserActivity" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -35,18 +33,31 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity android:name=".view.detail.DetailActivity" />
-        <activity android:name=".view.category.CategoryActivity" />
-        <activity android:name=".view.home.MainActivity">
+            android:name=".view.cart.ThongTinDonHangActivity"
+            android:label="@string/title_activity_thong_tin_don_hang"></activity>
+        <activity android:name=".view.searchviewmonan.SearchViewMonAnActivity" />
+        <activity
+            android:name=".splashscreen.SplashScreen"
+            android:theme="@style/SplashscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".view.locationmaps.ServiceAddress"/>
+        <activity android:name=".view.cart.AddCartActivity" />
+        <activity android:name=".view.user.ResetPasswordActivity" />
+        <activity android:name=".view.user.LoginActivity" />
+        <activity android:name=".view.user.DangKyActivity" />
+        <activity android:name=".view.user.UserActivity" />
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".view.detail.DetailActivity" />
+        <activity android:name=".view.category.CategoryActivity" />
+        <activity android:name=".view.home.MainActivity" />
+
+        <service android:name=".view.locationmaps.ServiceAddress" />
     </application>
 
 </manifest>

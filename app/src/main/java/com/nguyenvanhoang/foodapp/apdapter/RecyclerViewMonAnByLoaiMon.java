@@ -67,24 +67,6 @@ public class RecyclerViewMonAnByLoaiMon extends RecyclerView.Adapter<RecyclerVie
                     float ketQuaMet = result[0];
                     float ketQuaKm = ketQuaMet /1000;
                     holder.textViewKhoangCach.setText(String.format(Locale.US,"%.2f km",ketQuaKm));
-//                    DatabaseReference databaseReference = firebaseDatabase.getReference().child("nhahang")
-//                                                                                                        .child(nhaHang.getKeyID())
-//                                                                                                        .child("diaChi");
-//                     databaseReference.addValueEventListener(new ValueEventListener() {
-//                         @Override
-//                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                             DiaChi diaChi = dataSnapshot.getValue(DiaChi.class);
-//                             nhaHang.setDiaChi(diaChi);
-//                             holder.textViewTenNhaHang.setText(nhaHang.getTenNhaHang());
-//                             holder.textViewDiaChi.setText(nhaHang.getDiaChi().getFullDiaChi());
-//                         }
-//
-//                         @Override
-//                         public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                         }
-//                     });
-
                 }
 
                 @Override

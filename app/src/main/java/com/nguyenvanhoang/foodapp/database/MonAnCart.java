@@ -13,23 +13,16 @@ public class MonAnCart implements Serializable {
     private String diaChiNhaHang;
     private String tenNhaHang;
     private String maUser;
+    private double latNhaHang;
+    private double longNhaHang;
+    private float soKm;
+
 
     public MonAnCart() {
         super();
     }
-    public MonAnCart(String maMon, String tenMon, String chiTiet, String hinhAnh, double gia, int soLuongChon, String maNhaHang, String diaChiNhaHang, String tenNhaHang) {
-        this.maMon = maMon;
-        this.tenMon = tenMon;
-        this.chiTiet = chiTiet;
-        this.hinhAnh = hinhAnh;
-        this.gia = gia;
-        this.soLuongChon = soLuongChon;
-        this.maNhaHang = maNhaHang;
-        this.diaChiNhaHang = diaChiNhaHang;
-        this.tenNhaHang = tenNhaHang;
-    }
 
-    public MonAnCart(String maMon, String tenMon, String chiTiet, String hinhAnh, double gia, int soLuongChon, String maNhaHang, String diaChiNhaHang, String tenNhaHang, String maUser) {
+    public MonAnCart(String maMon, String tenMon, String chiTiet, String hinhAnh, double gia, int soLuongChon, String maNhaHang, String diaChiNhaHang, String tenNhaHang, String maUser, double latNhaHang, double longNhaHang, float soKm) {
         this.maMon = maMon;
         this.tenMon = tenMon;
         this.chiTiet = chiTiet;
@@ -40,6 +33,33 @@ public class MonAnCart implements Serializable {
         this.diaChiNhaHang = diaChiNhaHang;
         this.tenNhaHang = tenNhaHang;
         this.maUser = maUser;
+        this.latNhaHang = latNhaHang;
+        this.longNhaHang = longNhaHang;
+        this.soKm = soKm;
+    }
+
+    public double getLatNhaHang() {
+        return latNhaHang;
+    }
+
+    public void setLatNhaHang(double latNhaHang) {
+        this.latNhaHang = latNhaHang;
+    }
+
+    public double getLongNhaHang() {
+        return longNhaHang;
+    }
+
+    public void setLongNhaHang(double longNhaHang) {
+        this.longNhaHang = longNhaHang;
+    }
+
+    public float getSoKm() {
+        return soKm;
+    }
+
+    public void setSoKm(float soKm) {
+        this.soKm = soKm;
     }
 
     public String getMaUser() {
@@ -135,6 +155,9 @@ public class MonAnCart implements Serializable {
                 ", diaChiNhaHang='" + diaChiNhaHang + '\'' +
                 ", tenNhaHang='" + tenNhaHang + '\'' +
                 ", maUser='" + maUser + '\'' +
+                ", latNhaHang=" + latNhaHang +
+                ", longNhaHang=" + longNhaHang +
+                ", soKm=" + soKm +
                 '}';
     }
 }

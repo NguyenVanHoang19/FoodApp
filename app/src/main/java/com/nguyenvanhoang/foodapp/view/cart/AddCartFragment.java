@@ -44,7 +44,9 @@ public class AddCartFragment extends BottomSheetDialogFragment {
     private FirebaseDatabase firebaseDatabase ;
     private static MonAn monAnChon;
     private static String tenNhaHang_send,diaChiNhaHang_send;
-    public AddCartFragment(MonAn monAn,String tenNhaHang,String diaChiNhaHang) {
+    private static double latNhaHang_send,longNhaHang_send;
+    private static float soKm_send;
+    public AddCartFragment(MonAn monAn,String tenNhaHang,String diaChiNhaHang,double latNhaHang,double longNhaHang,float soKm) {
         // Required empty public constructor
     }
 
@@ -52,11 +54,14 @@ public class AddCartFragment extends BottomSheetDialogFragment {
         super();
     }
 
-    public static AddCartFragment newInstance(MonAn monAn,String tenNhaHang,String diaChiNhaHang){
-        AddCartFragment addCartFragment = new AddCartFragment(monAn,tenNhaHang,diaChiNhaHang);
+    public static AddCartFragment newInstance(MonAn monAn,String tenNhaHang,String diaChiNhaHang,double latNhaHang,double longNhaHang,float soKm){
+        AddCartFragment addCartFragment = new AddCartFragment(monAn,tenNhaHang,diaChiNhaHang,latNhaHang,longNhaHang,soKm);
         monAnChon = monAn;
         tenNhaHang_send = tenNhaHang;
         diaChiNhaHang_send = diaChiNhaHang;
+        latNhaHang_send = latNhaHang;
+        longNhaHang_send = longNhaHang;
+        soKm_send = soKm;
       return addCartFragment;
     };
 
@@ -148,6 +153,10 @@ public class AddCartFragment extends BottomSheetDialogFragment {
     }
     public void themMonAnVaoGioHang(){
         Intent intent = new Intent(getActivity(),AddCartActivity.class);
+        intent.putExtra("latNhaHang",latNhaHang_send);
+        intent.putExtra("longNhaHang",longNhaHang_send);
+        intent.putExtra("soKm",soKm_send);
+
         MonAnCart monAnCart = new MonAnCart();
         monAnCart.setMaMon(monAnChon.getKeyID());
         monAnCart.setTenMon(monAnChon.getTenMon());
@@ -158,6 +167,9 @@ public class AddCartFragment extends BottomSheetDialogFragment {
         monAnCart.setMaNhaHang(monAnChon.getIdNhaHang());
         monAnCart.setTenNhaHang(tenNhaHang_send);
         monAnCart.setDiaChiNhaHang(diaChiNhaHang_send);
+        monAnCart.setLatNhaHang(latNhaHang_send);
+        monAnCart.setLongNhaHang(longNhaHang_send);
+        monAnCart.setSoKm(soKm_send);
         MonAnCart monAnCart_Query = null;
         monAnCart_Query = databaseSQLite.kiemTraTrungMaMonAn(monAnChon.getKeyID(),UserActivity.Email_Login);
         monAnCart.setMaUser(UserActivity.Email_Login);

@@ -26,6 +26,9 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
     private static String TB_MONAN_TENNHAHANG = "TEN_NHA_HANG";
     private static String TB_MONAN_DIACHINHAHANG = "DIA_CHI_NHA_HANG";
     private static String TB_MONAN_MAUSER = "MA_USER";
+    private static String TB_MONAN_LAT_NHAHANG = "LAT_NHA_HANG";
+    private static String TB_MONAN_LONG_NHAHANG = "LONG_NHA_HANG";
+    private static String TB_MONAN_LAT_SOKM = "SOKM_NHA_HANG";
     // user dat hang
     private static String TB_USER = "USER";
     private static String TB_USER_MA = "MA_USER";
@@ -52,7 +55,10 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
                 TB_MONAN_MANHAHANG + " TEXT,"+
                 TB_MONAN_DIACHINHAHANG + " TEXT,"+
                 TB_MONAN_TENNHAHANG + " TEXT,"+
-                TB_MONAN_MAUSER + " TEXT )";
+                TB_MONAN_MAUSER + " TEXT,"+
+                TB_MONAN_LAT_NHAHANG + " DOUBLE,"+
+                TB_MONAN_LONG_NHAHANG + " DOUBLE,"+
+                TB_MONAN_LAT_SOKM + " FLOAT )";
         String tbUser = " CREATE TABLE " + TB_USER +" ( "+
                 TB_USER_GMAIL + " TEXT PRIMARY KEY," +
                 TB_USER_TEN + " TEXT,"+
@@ -80,7 +86,9 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
         contentValues.put(TB_MONAN_DIACHINHAHANG,monAnCart.getDiaChiNhaHang());
         contentValues.put(TB_MONAN_TENNHAHANG,monAnCart.getTenNhaHang());
         contentValues.put(TB_MONAN_MAUSER,monAnCart.getMaUser());
-
+        contentValues.put(TB_MONAN_LAT_NHAHANG,monAnCart.getLatNhaHang());
+        contentValues.put(TB_MONAN_LONG_NHAHANG,monAnCart.getLongNhaHang());
+        contentValues.put(TB_MONAN_LAT_SOKM,monAnCart.getSoKm());
         int result = (int)sqLiteDatabase.insert(TB_MONAN,null,contentValues);
         sqLiteDatabase.close();
         return result;
@@ -104,6 +112,9 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
             monAnCart.setDiaChiNhaHang(cursor.getString(8));
             monAnCart.setTenNhaHang(cursor.getString(9));
             monAnCart.setMaUser(cursor.getString(10));
+            monAnCart.setLatNhaHang(cursor.getDouble(11));
+            monAnCart.setLongNhaHang(cursor.getDouble(12));
+            monAnCart.setSoKm(cursor.getFloat(13));
             list.add(monAnCart);
             cursor.moveToNext();
         }
@@ -130,6 +141,9 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
             monAnCart.setDiaChiNhaHang(cursor.getString(8));
             monAnCart.setTenNhaHang(cursor.getString(9));
             monAnCart.setMaUser(cursor.getString(10));
+            monAnCart.setLatNhaHang(cursor.getDouble(11));
+            monAnCart.setLongNhaHang(cursor.getDouble(12));
+            monAnCart.setSoKm(cursor.getFloat(13));
             list.add(monAnCart);
             cursor.moveToNext();
         }
@@ -156,6 +170,9 @@ public class CreateDatabaseSQLite extends SQLiteOpenHelper {
             monAnCart.setDiaChiNhaHang(cursor.getString(8));
             monAnCart.setTenNhaHang(cursor.getString(9));
             monAnCart.setMaUser(cursor.getString(10));
+            monAnCart.setLatNhaHang(cursor.getDouble(11));
+            monAnCart.setLongNhaHang(cursor.getDouble(12));
+            monAnCart.setSoKm(cursor.getFloat(13));
             list.add(monAnCart);
             cursor.moveToNext();
         }
