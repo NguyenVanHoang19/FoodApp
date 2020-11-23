@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        //
         homeAdapter.notifyDataSetChanged();
 
         ///// mon an
