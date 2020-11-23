@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     MonAn monAn = snapshot.getValue(MonAn.class);
                     monAnList.add(monAn);
+                    homeAdapter.notifyDataSetChanged();
                     System.out.println(snapshot.getValue().toString());
                 }
             }
