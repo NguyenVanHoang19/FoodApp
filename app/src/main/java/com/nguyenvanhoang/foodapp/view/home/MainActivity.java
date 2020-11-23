@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+    ////
     /// get current location
     @SuppressLint("MissingPermission")
     public void getCurrentLocation() {
