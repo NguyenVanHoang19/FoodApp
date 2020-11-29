@@ -89,8 +89,12 @@ public class LoginActivity extends AppCompatActivity {
                                         UserActivity.TRANG_THAI_DANG_NHAP = true;
                                         UserActivity.Email_Login = email;
                                         if(AddCartActivity.TRANG_THAI_CLICK_BUTTON_THANHTOAN_CHUA_LOGIN == true){
-                                            Intent intent1 = getIntent();
-                                            String idNhaHang = intent1.getStringExtra("idNhaHang");
+                                            System.out.println(AddCartActivity.TRANG_THAI_CLICK_BUTTON_THANHTOAN_CHUA_LOGIN);
+//                                            Intent intent1 = getIntent();
+//
+//                                            String idNhaHang = intent1.getStringExtra("idNhaHang");
+                                            String idNhaHang = AddCartActivity.maNhaHang;
+                                            System.out.println("maNhahang" + idNhaHang);
                                             databaseSQLite.deleteGioHang(idNhaHang,UserActivity.Email_Login);
                                             databaseSQLite.updateUserMonAnCart(idNhaHang,UserActivity.Email_Login);
                                             Intent intentCart = new Intent(LoginActivity.this,AddCartActivity.class);

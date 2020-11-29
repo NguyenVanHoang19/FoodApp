@@ -100,7 +100,7 @@ public class DetailActivity extends AppCompatActivity {
         });
         //
         Query query = firebaseDatabase.getReference().child("nhahang").child(idNhaHang);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 findViewById(R.id.progressBar).setVisibility(View.GONE);

@@ -44,22 +44,25 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnThanhToan {
     private Toolbar toolbar ;
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private RecyclerView recyclerViewDanhSachMonAnThanhToan;
-    private TextView tvGiaMonAnGioHang,tvTongTienThanhToan,tvPhiGiaoHang,tvTenNhaHang,tvDiaChiGiaoHangDetail;
+    private TextView tvGiaMonAnGioHang,tvTongTienThanhToan,tvPhiGiaoHang,tvTenNhaHang,tvDiaChiGiaoHangDetail,tvSoKm;
     private Button btnTongThanhToan,btnThemMon;
-    private final double PHI_GIAO_HANG = 12000;
+    private double PHI_GIAO_HANG = 12000;
+    private double tongGiaTienMonAn =  0;
     public static RecyclerViewDanhSachMonAnThanhToan adapter;
     public static List<MonAnCart> monAnCartList = new ArrayList<MonAnCart>();
     public static CreateDatabaseSQLite databaseSQLite;
     private OnClick_MonAnThanhToan onClick_monAnBtnThanhToan;
     public static boolean TRANG_THAI_CLICK_BUTTON_THANHTOAN_CHUA_LOGIN = false;
-    private int soLuongChon= 1;
-    public static double giaTien = 0;
+    public static String maNhaHang = "";
+
+    private String maDonHang = "" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,17 +80,24 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
         btnTongThanhToan = (Button) findViewById(R.id.btnTongThanhToan);
         btnThemMon = (Button) findViewById(R.id.btnThemMon);
         tvDiaChiGiaoHangDetail = (TextView) findViewById(R.id.tvDiaChiGiaoHangDetail);
-        tvPhiGiaoHang.setText(decimalFormat.format(PHI_GIAO_HANG) + " VNĐ");
+        tvSoKm = (TextView) findViewById(R.id.tvSoKm);
         setupActionBar();
         databaseSQLite = new CreateDatabaseSQLite(getApplicationContext());
         monAnCartList =  databaseSQLite.getAllMonAnCartByUser(UserActivity.Email_Login);
+        if(monAnCartList.size() > 0){
+            if(monAnCartList.get(0).getSoKm() <= 1)
+                PHI_GIAO_HANG = 12000;
+            else
+                PHI_GIAO_HANG = monAnCartList.get(0).getSoKm() * 12000;
+            tvSoKm.setText( String.format(Locale.US,"%.2f km",monAnCartList.get(0).getSoKm()));
+            tvPhiGiaoHang.setText(decimalFormat.format(PHI_GIAO_HANG) + " VNĐ");
+        }
         // activity thong tin don
         Intent intentThongTinDonHang = new Intent(AddCartActivity.this,ThongTinDonHangActivity.class);
         //
         if(monAnCartList.size() < 1 ){
             btnTongThanhToan.setEnabled(false);
         }
-        double tongGiaTienMonAn =  0;
         if(monAnCartList.size() > 0){
             btnTongThanhToan.setEnabled(true);
             for(MonAnCart monAnCart : monAnCartList){
@@ -109,7 +119,10 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
             intentThongTinDonHang.putExtra("diaChiGiaoHang",MainActivity.DIACHIHIENTAI + "");
             intentThongTinDonHang.putExtra("giaMonAn",tongGiaTienMonAn);
             intentThongTinDonHang.putExtra("tongThanhToan",tongGiaTienMonAn + PHI_GIAO_HANG);
+            intentThongTinDonHang.putExtra("phiGiaoHang",PHI_GIAO_HANG);
             intentThongTinDonHang.putExtra("monAnCartList",(Serializable) monAnCartList);
+
+            maNhaHang = monAnCartList.get(0).getMaNhaHang();
         }
         adapter = new RecyclerViewDanhSachMonAnThanhToan(monAnCartList,this);
         recyclerViewDanhSachMonAnThanhToan.setLayoutManager(new GridLayoutManager(this,1));
@@ -130,6 +143,7 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
                     //
                     if(monAnCartList.size() > 0){
                         luuThanhToan(monAnCartList.get(0).getMaNhaHang(),UserActivity.Email_Login);
+                        intentThongTinDonHang.putExtra("maDonHang",maDonHang);
                         databaseSQLite.deleteGioHang(monAnCartList.get(0).getMaNhaHang(),UserActivity.Email_Login);
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddCartActivity.this);
@@ -239,10 +253,15 @@ public class AddCartActivity extends AppCompatActivity implements OnClick_MonAnT
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
         java.util.Date date = new java.util.Date();
         donHang.setNgayDat(simpleDateFormat.format(date));
+        donHang.setTongTien(tongGiaTienMonAn + PHI_GIAO_HANG);
         donHang.setTrangThaiXacNhanDonHang("false");
         donHang.setTrangThaiDaGiaoHang("false");
+        donHang.setTrangThaiHuyDonHang("false");
         DonHang_Interface donHang_interface = new DonHangDAO();
         donHang_interface.addDonHang(donHang);
+        // set ma don hang
+        maDonHang += donHang.getKeyID();
+        System.out.println("them don hang : " + maDonHang);
         // chi tiet don hang
         ChiTietDonHang_Interface chiTietDonHang_interface = new ChiTietDonHangDAO();
         for(MonAnCart monAnCart :  databaseSQLite.getAllMonAnCartByUser(UserActivity.Email_Login)){

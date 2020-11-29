@@ -8,17 +8,37 @@ public class DonHang implements Serializable {
     private String keyIdNhaHang;
     private String ngayDat;
     private String ghiChu;
+    private double tongTien;
     private String trangThaiXacNhanDonHang ;
     private String trangThaiDaGiaoHang;
+    private String trangThaiHuyDonHang;
 
-    public DonHang(String keyID, String emailUser, String emailNhaHang, String ngayDat, String ghiChu, String trangThaiXacNhanDonHang, String trangThaiDaGiaoHang) {
+    public DonHang(String keyID, String keyIdUser, String keyIdNhaHang, String ngayDat, String ghiChu, double tongTien, String trangThaiXacNhanDonHang, String trangThaiDaGiaoHang, String trangThaiHuyDonHang) {
         this.keyID = keyID;
-        this.keyIdUser = emailUser;
-        this.keyIdNhaHang = emailNhaHang;
+        this.keyIdUser = keyIdUser;
+        this.keyIdNhaHang = keyIdNhaHang;
         this.ngayDat = ngayDat;
         this.ghiChu = ghiChu;
+        this.tongTien = tongTien;
         this.trangThaiXacNhanDonHang = trangThaiXacNhanDonHang;
         this.trangThaiDaGiaoHang = trangThaiDaGiaoHang;
+        this.trangThaiHuyDonHang = trangThaiHuyDonHang;
+    }
+
+    public double getTongTien() {
+        return tongTien;
+    }
+
+    public void setTongTien(double tongTien) {
+        this.tongTien = tongTien;
+    }
+
+    public String getTrangThaiHuyDonHang() {
+        return trangThaiHuyDonHang;
+    }
+
+    public void setTrangThaiHuyDonHang(String trangThaiHuyDonHang) {
+        this.trangThaiHuyDonHang = trangThaiHuyDonHang;
     }
 
     public DonHang() {

@@ -3,12 +3,18 @@ package com.nguyenvanhoang.foodapp.view.cart;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -21,10 +27,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.nguyenvanhoang.foodapp.R;
+import com.nguyenvanhoang.foodapp.dao.DonHangDAO;
 import com.nguyenvanhoang.foodapp.database.MonAnCart;
+import com.nguyenvanhoang.foodapp.entities.DonHang;
+import com.nguyenvanhoang.foodapp.interface_dao.DonHang_Interface;
 import com.nguyenvanhoang.foodapp.view.home.MainActivity;
+import com.nguyenvanhoang.foodapp.view.user.UserActivity;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,11 +47,12 @@ public class ThongTinDonHangActivity extends AppCompatActivity implements OnMapR
     private double latNhaHang;
     private double longNhaHang;
     private String diaChiGiaoHang;
+    private String maDonHang;
     private String tenNhaHang;
     private String maNhaHang;
     private FirebaseDatabase firebaseDatabase ;
     private List<MonAnCart> monAnCartList ;
-    private TextView tvTenNhaHang,tvDiaChiGiaoHang,tvGiaMonAnGioHang,tvKhuyenMai,tvSoKm,tvTongTienThanhToan;
+    private TextView tvTenNhaHang,tvDiaChiGiaoHang,tvGiaMonAnGioHang,tvKhuyenMai,tvSoKm,tvTongTienThanhToan,tvPhiGiaoHang;
     private Button btnHuyDonHang;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +84,10 @@ public class ThongTinDonHangActivity extends AppCompatActivity implements OnMapR
         diaChiGiaoHang = intent.getStringExtra("diaChiGiaoHang");
         double giaMonAn = intent.getDoubleExtra("giaMonAn",0);
         double tongThanhToan = intent.getDoubleExtra("tongThanhToan",0);
+        double phiGiaoHang = intent.getDoubleExtra("phiGiaoHang",0);
+        maDonHang = intent.getStringExtra("maDonHang");
+
+
         monAnCartList = new ArrayList<>();
         monAnCartList = (List<MonAnCart>) intent.getSerializableExtra("monAnCartList");
         tvTenNhaHang.setText(tenNhaHang);
@@ -79,11 +95,60 @@ public class ThongTinDonHangActivity extends AppCompatActivity implements OnMapR
         DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         tvGiaMonAnGioHang.setText(decimalFormat.format(giaMonAn) + " VNĐ");
         tvTongTienThanhToan.setText(decimalFormat.format(tongThanhToan) + " VNĐ");
+        tvPhiGiaoHang.setText(decimalFormat.format(phiGiaoHang) + " VNĐ");
         if(monAnCartList.size() > 0){
             tvSoKm.setText( String.format(Locale.US,"%.2f km",monAnCartList.get(0).getSoKm()));
         }
         System.out.println(monAnCartList.size());
+        btnHuyDonHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder_dialog = new AlertDialog.Builder(ThongTinDonHangActivity.this);
+                builder_dialog.setTitle("Thông báo");
+                builder_dialog.setMessage("Bạn có chắc chắn muốn hủy đơn hàng?");
+                builder_dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        System.out.println("huy don hang : " + maDonHang);
+                        huyDonHang(maDonHang,maNhaHang, UserActivity.Email_Login,tongThanhToan);
+                        // show notification thong bao
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                            NotificationChannel channel = new NotificationChannel("Thông báo","Thông báo đặt hàng", NotificationManager.IMPORTANCE_DEFAULT);
+                            NotificationManager manager = getSystemService(NotificationManager.class);
+                            manager.createNotificationChannel(channel);
+                        }
 
+                        AlertDialog.Builder builder_Huy = new AlertDialog.Builder(ThongTinDonHangActivity.this);
+                        builder_Huy.setMessage("Đã hủy đơn hàng!!!");
+                        builder_Huy.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                startActivity(new Intent(ThongTinDonHangActivity.this,MainActivity.class));
+                            }
+                        });
+                        AlertDialog dialog = builder_Huy.create();
+                        dialog.show();
+                        /// show thong bao
+                        NotificationCompat.Builder notifiBuider = new NotificationCompat.Builder(ThongTinDonHangActivity.this,"Thông báo");
+                        notifiBuider.setContentTitle("Thông báo đơn hàng");
+                        notifiBuider.setContentText("Đơn hàng đã hủy!!! " + tvTongTienThanhToan.getText().toString());
+                        notifiBuider.setSmallIcon(R.drawable.logo);
+                        notifiBuider.setAutoCancel(true);
+                        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(ThongTinDonHangActivity.this);
+                        managerCompat.notify(1,notifiBuider.build());
+                    }
+                });
+                builder_dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                AlertDialog  alertDialog1 = builder_dialog.create();
+                alertDialog1.show();
+            }
+        });
 
 //        firebaseDatabase = FirebaseDatabase.getInstance();
 //        Query query = firebaseDatabase.getReference().child("nhahang").child(intent.getStringExtra("maNhaHang"));
@@ -143,5 +208,23 @@ public class ThongTinDonHangActivity extends AppCompatActivity implements OnMapR
         tvSoKm = (TextView) findViewById(R.id.tvSoKm);
         tvTongTienThanhToan = (TextView) findViewById(R.id.tvTongTienThanhToan);
         btnHuyDonHang = (Button) findViewById(R.id.btnHuyDonHang);
+        tvPhiGiaoHang = (TextView) findViewById(R.id.tvPhiGiaoHang);
+    }
+    public void huyDonHang(String maDonHang,String idNhaHang,String idUser,double tongThanhToan){
+        DonHang donHang = new DonHang();
+        donHang.setKeyID(maDonHang);
+        donHang.setKeyIdNhaHang(idNhaHang);
+        donHang.setKeyIdUser(idUser);
+        donHang.setGhiChu("3 Bò Nướng thượng hạng");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        java.util.Date date = new java.util.Date();
+        donHang.setNgayDat(simpleDateFormat.format(date));
+        donHang.setTongTien(tongThanhToan);
+        donHang.setTrangThaiXacNhanDonHang("false");
+        donHang.setTrangThaiDaGiaoHang("false");
+        donHang.setTrangThaiHuyDonHang("true");
+        DonHang_Interface donHang_interface = new DonHangDAO();
+        donHang_interface.updateDonHang(donHang);
+
     }
 }

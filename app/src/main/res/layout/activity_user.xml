@@ -56,6 +56,17 @@
             android:background="@drawable/border_bottom_button"
             />
         <Button
+            android:id="@+id/btnLichSuDatHang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnGioHang"
+            android:text="Lịch sử đặt hàng"
+            android:layout_marginTop="20dp"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            android:background="@drawable/border_bottom_button"
+            />
+        <Button
             android:id="@+id/btnDangKy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,7 +74,7 @@
             android:gravity="left|center"
             android:paddingLeft="10dp"
             android:background="@drawable/border_bottom_button"
-            android:layout_below="@+id/btnGioHang"
+            android:layout_below="@+id/btnLichSuDatHang"
             />
 
         <Button

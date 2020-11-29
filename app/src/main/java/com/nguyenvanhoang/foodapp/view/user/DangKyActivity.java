@@ -81,13 +81,13 @@ public class DangKyActivity extends AppCompatActivity {
                         .addOnCompleteListener(DangKyActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(DangKyActivity.this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(DangKyActivity.this, "Chúng tôi đã gởi 1 email xác thực đến mail của bạn!!", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
                                 // If sign in fails, display a message to the user. If sign in succeeds
                                 // the auth state listener will be notified and logic to handle the
                                 // signed in user can be handled in the listener.
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(DangKyActivity.this, "Đăng ký thất bại",
+                                    Toast.makeText(DangKyActivity.this, "Tài khoản đã được sử dụng",
                                             Toast.LENGTH_SHORT).show();
                                 } else {
                                     auth.signInWithEmailAndPassword(email,password)

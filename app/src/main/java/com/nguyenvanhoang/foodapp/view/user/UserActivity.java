@@ -29,6 +29,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.nguyenvanhoang.foodapp.R;
 import com.nguyenvanhoang.foodapp.view.cart.AddCartActivity;
+import com.nguyenvanhoang.foodapp.view.cart.LichSuDatHangActivity;
 import com.nguyenvanhoang.foodapp.view.locationmaps.Constaints;
 import com.nguyenvanhoang.foodapp.view.locationmaps.ServiceAddress;
 
@@ -37,7 +38,7 @@ public class UserActivity extends AppCompatActivity {
     private Toolbar toolbar ;
     private AppBarLayout appBarLayout;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private Button btnDangNhap,btnDangKy,btnDangXuat,btnGioHang;
+    private Button btnDangNhap,btnDangKy,btnDangXuat,btnGioHang,btnLichSuDatHang;
     private TextView tvViTriHienTai;
     private ResultReceiver resultReceiver;
     public static boolean TRANG_THAI_DANG_NHAP = false;
@@ -54,6 +55,7 @@ public class UserActivity extends AppCompatActivity {
         btnDangXuat = (Button) findViewById(R.id.btnDangXuat);
         btnGioHang = (Button) findViewById(R.id.btnGioHang);
         tvViTriHienTai = (TextView) findViewById(R.id.tvViTriHienTai);
+        btnLichSuDatHang = (Button) findViewById(R.id.btnLichSuDatHang);
         // check quyen
         if (ContextCompat.checkSelfPermission(
                 getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -63,11 +65,13 @@ public class UserActivity extends AppCompatActivity {
             getCurrentLocation();
         }
         btnDangXuat.setVisibility(View.GONE);
+        btnLichSuDatHang.setVisibility(View.GONE);
         initActionBar();
         if(TRANG_THAI_DANG_NHAP){
             btnDangNhap.setVisibility(View.GONE);
             btnDangKy.setVisibility(View.GONE);
             btnDangXuat.setVisibility(View.VISIBLE);
+            btnLichSuDatHang.setVisibility(View.VISIBLE);
             setTitle(Email_Login);
         }
         btnGioHang.setOnClickListener(new View.OnClickListener() {
@@ -96,9 +100,16 @@ public class UserActivity extends AppCompatActivity {
                 btnDangXuat.setVisibility(View.GONE);
                 btnDangNhap.setVisibility(View.VISIBLE);
                 btnDangKy.setVisibility(View.VISIBLE);
+                btnLichSuDatHang.setVisibility(View.GONE);
                 TRANG_THAI_DANG_NHAP = false;
                 Email_Login = "false";
                 setTitle("Cá nhân");
+            }
+        });
+        btnLichSuDatHang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(UserActivity.this, LichSuDatHangActivity.class));
             }
         });
 
